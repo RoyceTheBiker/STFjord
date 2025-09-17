@@ -29,3 +29,13 @@ A token is required to run Terraform. The Terraform API needs to perform actions
 # Building
 
 Terraform --var_file=./settings.json --token=~/.digitalOcean/tokenOne
+
+# Plugins For Roundcube
+
+## MFA
+
+Options for Multi-Factor Authentication
+
+- Google Authenticator
+- YubiKey
+- SMS
