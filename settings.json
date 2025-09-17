@@ -1,0 +1,11 @@
+{
+  domain: "SiliconTao.com",
+  host: "mail",
+  sshKey: "id_ecdsa"
+  roundCubePlugins = [
+    "mfa",
+    "passwordChangeer",
+    "z-push"
+  ]
+]
+}
