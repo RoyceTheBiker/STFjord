@@ -39,3 +39,11 @@ Options for Multi-Factor Authentication
 - Google Authenticator
 - YubiKey
 - SMS
+
+# Terraforming
+
+## Plan
+
+```bash
+terraform plan -var do_token=$(cat ~/.digitalOcean/token) -var pvt_key=~/.ssh/id_ecdsa
+```
