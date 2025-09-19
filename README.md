@@ -24,6 +24,8 @@ doctl apps tier instance-size get <instance size slug> [flags]
 
 [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/)
 
+[Remote State](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
+
 A token is required to run Terraform. The Terraform API needs to perform actions in the cloud provider API as an authorized administrator.
 
 # Building
@@ -45,5 +47,26 @@ Options for Multi-Factor Authentication
 ## Plan
 
 ```bash
-terraform plan -var do_token=$(cat ~/.digitalOcean/token) -var pvt_key=~/.ssh/id_ecdsa
+export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
+terraform plan
 ```
+
+## Apply
+
+```bash
+export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
+terraform apply 
+```
+
+## Destroy
+
+```bash
+export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
+terraform destroy 
+```
+
+.
+
+.
+
+.

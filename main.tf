@@ -1,10 +1,28 @@
-resource "digitalocean_droplet" "www-1" {
+resource "digitalocean_droplet" "webmail" {
   image  = "rockylinux-9-x64"
   name   = "email"
   region = "tor1"
-  size   = "s-1vcpu-1gb"
+  size   = "s-1vcpu-2gb"
   ssh_keys = [
-    var.pvt_key
+    data.digitalocean_ssh_key.terraform.id
   ]
+
+  connection {
+    type  = "ssh"
+    host  = self.ipv4_address
+    user  = "root"
+    agent = true
+  }
+
+  provisioner "file" {
+    source      = "./payload.sh"
+    destination = "/root/payload.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "bash /root/payload.sh"
+    ]
+  }
 }
 

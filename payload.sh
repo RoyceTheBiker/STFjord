@@ -8,6 +8,9 @@
 #
 # Replace this payload script to deploy a different project into a Rocky Linux Digital Ocean Droplet.
 
+# Exit the script on error event.
+set -x
+
 #################################################################
 # Change these values for your mail server
 export MX_HOST="roundcube"
@@ -21,6 +24,9 @@ export COMMON_NAME=${MX_DOMAIN}
 export ENVIRONMENT="PROD" # Set this value to PROD to generate strong passwords for accounts.
 export TEST_EMAIL_ACCOUNTS="royce"
 #################################################################
+
+# Add the Extra Packages for Enterprise Linux repository
+dnf -y install epel-release
 
 # Setup Roundcube with database, Postfix, and Dovecot
 curl https://cdn.silicontao.com/RockyLinuxWebmail/RockyLinuxWebmail.sh | bash
