@@ -42,7 +42,7 @@ Silicon Tao uses the DNS provided by the domain registrar, so the first option d
 
 Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address, register the IP with our DNS, and return later to run the Terraform project to build our email server and setup the encrypted services using signed certificates.
 
- [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)]<https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png>)
+ [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
 
 # Plugins For Roundcube
 
