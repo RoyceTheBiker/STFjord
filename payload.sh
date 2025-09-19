@@ -28,6 +28,9 @@ export TEST_EMAIL_ACCOUNTS="royce"
 # Add the Extra Packages for Enterprise Linux repository
 dnf -y install epel-release
 
+echo "Skipping payload for Droplet testing."
+exit 0
+
 # Setup Roundcube with database, Postfix, and Dovecot
 curl https://cdn.silicontao.com/RockyLinuxWebmail/RockyLinuxWebmail.sh | bash
 
