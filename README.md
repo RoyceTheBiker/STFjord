@@ -65,9 +65,11 @@ terraform plan
 
 ## Apply
 
+Copy the **settings.json** file and change the values to match your environment.
+
 ```bash
 export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
-terraform apply 
+terraform apply --var-file=~/settings.json
 ```
 
 ## Destroy

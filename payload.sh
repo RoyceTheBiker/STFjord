@@ -9,7 +9,7 @@
 # Replace this payload script to deploy a different project into a Rocky Linux Digital Ocean Droplet.
 
 # Exit the script on error event.
-set -x
+set -e
 
 #################################################################
 # Change these values for your mail server
@@ -28,6 +28,9 @@ export TEST_EMAIL_ACCOUNTS="royce"
 # Add the Extra Packages for Enterprise Linux repository
 dnf -y install epel-release
 
+# Activate Certbot to create signed certificates
+curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
+
 echo "Skipping payload for Droplet testing."
 exit 0
 
@@ -36,3 +39,7 @@ curl https://cdn.silicontao.com/RockyLinuxWebmail/RockyLinuxWebmail.sh | bash
 
 # Setup ClamAV and Milter for Postfix
 curl https://cdn.silicontao.com/RockyLinuxWebmail/ClamAV4Postfix.sh | bash
+
+# Harden the server.
+# Switch to encrypted ports.
+curl https://cdn.silicontao.com/RockyLinuxWebmail/HardenWebmail.sh | bash

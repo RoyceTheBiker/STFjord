@@ -26,3 +26,10 @@ resource "digitalocean_droplet" "webmail" {
   }
 }
 
+
+resource "digitalocean_reserved_ip_assignment" "example" {
+  ip_address = var.reserved_ip
+  droplet_id = digitalocean_droplet.webmail.id
+}
+
+
