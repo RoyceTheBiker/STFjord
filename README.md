@@ -26,6 +26,8 @@ doctl apps tier instance-size get <instance size slug> [flags]
 
 [Remote State](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
 
+[DigitalOcean Metrics Agent](https://docs.digitalocean.com/products/monitoring/how-to/install-metrics-agent/)
+
 A token is required to run Terraform. The Terraform API needs to perform actions in the cloud provider API as an authorized administrator.
 
 # Building

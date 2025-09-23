@@ -13,13 +13,13 @@ set -e
 
 #################################################################
 # Change these values for your mail server
-export MX_HOST="roundcube"
-export MX_DOMAIN="mworks.tech"
-export COUNTRY="US"
-export STATE="Texas"
-export LOCATION="Dallas"
-export ORGANIZATION="Machine Works"
-export ORG_UNIT="Security Department"
+export MX_HOST="mail"
+export MX_DOMAIN="SiliconTao.com"
+export COUNTRY="CA"
+export STATE="Saskatchewan"
+export LOCATION="Regina"
+export ORGANIZATION="Silicon Tao Technology Systems"
+export ORG_UNIT="Production"
 export COMMON_NAME=${MX_DOMAIN}
 export ENVIRONMENT="PROD" # Set this value to PROD to generate strong passwords for accounts.
 export TEST_EMAIL_ACCOUNTS="royce"
@@ -29,6 +29,7 @@ export TEST_EMAIL_ACCOUNTS="royce"
 dnf -y install epel-release
 
 # Activate Certbot to create signed certificates
+curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh >CertbotSetup.sh
 curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
 
 # Setup Roundcube with database, Postfix, and Dovecot

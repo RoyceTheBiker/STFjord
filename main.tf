@@ -6,24 +6,7 @@ resource "digitalocean_droplet" "webmail" {
   ssh_keys = [
     data.digitalocean_ssh_key.terraform.id
   ]
-
-  #connection {
-  #  type  = "ssh"
-  #  host  = self.ipv4_address
-  #  user  = "root"
-  #  agent = true
-  #}
-
-  #provisioner "file" {
-  #  source      = "./payload.sh"
-  #  destination = "/root/payload.sh"
-  #}
-
-  #provisioner "remote-exec" {
-  #  inline = [
-  #    "bash /root/payload.sh"
-  #  ]
-  #}
+  monitoring = true # Enable the Digital Ocean metrics agent
 }
 
 resource "digitalocean_reserved_ip_assignment" "webmil_ip" {
