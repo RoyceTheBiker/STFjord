@@ -7,9 +7,36 @@ resource "digitalocean_droplet" "webmail" {
     data.digitalocean_ssh_key.terraform.id
   ]
 
+  #connection {
+  #  type  = "ssh"
+  #  host  = self.ipv4_address
+  #  user  = "root"
+  #  agent = true
+  #}
+
+  #provisioner "file" {
+  #  source      = "./payload.sh"
+  #  destination = "/root/payload.sh"
+  #}
+
+  #provisioner "remote-exec" {
+  #  inline = [
+  #    "bash /root/payload.sh"
+  #  ]
+  #}
+}
+
+resource "digitalocean_reserved_ip_assignment" "webmil_ip" {
+  ip_address = var.reserved_ip
+  droplet_id = digitalocean_droplet.webmail.id
+}
+
+resource "null_resource" "payload" {
+  depends_on = [digitalocean_reserved_ip_assignment.webmil_ip]
+
   connection {
     type  = "ssh"
-    host  = self.ipv4_address
+    host  = var.reserved_ip
     user  = "root"
     agent = true
   }
@@ -24,11 +51,5 @@ resource "digitalocean_droplet" "webmail" {
       "bash /root/payload.sh"
     ]
   }
+
 }
-
-resource "digitalocean_reserved_ip_assignment" "webmil_ip" {
-  ip_address = var.reserved_ip
-  droplet_id = digitalocean_droplet.webmail.id
-}
-
-
