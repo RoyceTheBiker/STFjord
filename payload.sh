@@ -31,16 +31,6 @@ dnf -y install epel-release
 # Activate Certbot to create signed certificates
 curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
 
-i=0
-while [ $((i++)) -lt 100 ]; do
-  echo "Go check the IP $i"
-  ip a | grep 174 || echo "IP not assigned"
-  sleep 2
-done
-
-echo "Skipping payload for Droplet testing."
-exit 0
-
 # Setup Roundcube with database, Postfix, and Dovecot
 curl https://cdn.silicontao.com/RockyLinuxWebmail/RockyLinuxWebmail.sh | bash
 
