@@ -60,7 +60,8 @@ Options for Multi-Factor Authentication
 
 ```bash
 export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
-terraform plan
+terraform plan --var-file=~/settings.json
+
 ```
 
 ## Apply
