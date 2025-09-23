@@ -25,11 +25,15 @@ export ENVIRONMENT="PROD" # Set this value to PROD to generate strong passwords 
 export TEST_EMAIL_ACCOUNTS="royce"
 #################################################################
 
+# This Digial Ocean image was created with a orphaned RPM lock file.
+rm -f /var/lib/rpm/.rpm.lock || :
+
 # Add the Extra Packages for Enterprise Linux repository
 dnf -y install epel-release
 
+ls -lha /var/lib/rpm/.rpm.lock || :
+
 # Activate Certbot to create signed certificates
-curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh >CertbotSetup.sh
 curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
 
 # Setup Roundcube with database, Postfix, and Dovecot
