@@ -7,6 +7,7 @@ resource "digitalocean_droplet" "webmail" {
     data.digitalocean_ssh_key.terraform.id
   ]
   monitoring = true # Enable the Digital Ocean metrics agent
+  ipv6       = false
 }
 
 resource "digitalocean_reserved_ip_assignment" "webmil_ip" {

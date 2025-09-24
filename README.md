@@ -86,4 +86,9 @@ terraform destroy
 
 .
 
-.
+# Test The Webmail Certificate
+
+```bash
+openssl s_client -connect mail.SiliconTao.com:443 2>/dev/null </dev/null | \
+  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+```
