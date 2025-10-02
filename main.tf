@@ -26,13 +26,18 @@ resource "null_resource" "payload" {
   }
 
   provisioner "file" {
+    source      = "~/Downloads/letsencrypt.mWorks.tbz"
+    destination = "/root/letsencrypt.mWorks.tbz"
+  }
+
+  provisioner "file" {
     source      = "./payload.sh"
     destination = "/root/payload.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "export ADMIN_IP='${var.myip}'",
+      "export ADMIN_IP='${chomp(data.http.myip.response_body)}'",
       "bash /root/payload.sh"
     ]
   }

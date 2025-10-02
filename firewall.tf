@@ -1,3 +1,7 @@
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 resource "digitalocean_firewall" "email-firewall" {
   name = "email-firewall"
 
@@ -7,7 +11,7 @@ resource "digitalocean_firewall" "email-firewall" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = ["${var.myip}"]
+    source_addresses = ["${chomp(data.http.myip.response_body)}"]
   }
 
   # Unencrypted HTTP required by Certbot

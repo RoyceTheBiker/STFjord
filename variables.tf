@@ -3,16 +3,9 @@ variable "do_token" {
   type        = string
 }
 
-variable "myip" {
-  description = "The IP address of the system where these scripts are ran."
-  default     = ""
-
-}
 variable "reserved_ip" {
   description = "Reserved Public IP"
   default     = ""
+  type        = string
 }
-
-
-
 

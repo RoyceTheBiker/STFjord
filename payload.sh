@@ -21,8 +21,8 @@ export LOCATION="Dallas"
 export ORGANIZATION="Machine Works Tech"
 export ORG_UNIT="Security Team"
 export COMMON_NAME=${MX_DOMAIN}
-export ENVIRONMENT="PROD" # Set this value to PROD to generate strong passwords for accounts.
-export TEST_EMAIL_ACCOUNTS="royce"
+export ENVIRONMENT="PROD"     # Set this value to PROD to generate strong passwords for accounts.
+export EMAIL_ACCOUNTS="royce" # Space seperated list of account names to create.
 #################################################################
 
 # This Digial Ocean image was created with a orphaned RPM lock file.
@@ -35,7 +35,7 @@ ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 
 # My vimrc. This is optional, nice if you are working in the shell.
 curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
-                                                  
+
 # Activate Certbot to create signed certificates
 curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
 
