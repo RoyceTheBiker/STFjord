@@ -2,7 +2,7 @@ resource "digitalocean_droplet" "webmail" {
   image  = "rockylinux-9-x64"
   name   = "email"
   region = "tor1"
-  size   = "s-1vcpu-2gb"
+  size   = "s-2vcpu-4gb"
   ssh_keys = [
     data.digitalocean_ssh_key.terraform.id
   ]
@@ -32,6 +32,7 @@ resource "null_resource" "payload" {
 
   provisioner "remote-exec" {
     inline = [
+      "export ADMIN_IP='${var.myip}'",
       "bash /root/payload.sh"
     ]
   }

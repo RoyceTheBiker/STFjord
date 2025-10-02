@@ -14,25 +14,28 @@ set -e
 #################################################################
 # Change these values for your mail server
 export MX_HOST="mail"
-export MX_DOMAIN="SiliconTao.com"
-export COUNTRY="CA"
-export STATE="Saskatchewan"
-export LOCATION="Regina"
-export ORGANIZATION="Silicon Tao Technology Systems"
-export ORG_UNIT="Production"
+export MX_DOMAIN="mWorks.tech"
+export COUNTRY="US"
+export STATE="Texas"
+export LOCATION="Dallas"
+export ORGANIZATION="Machine Works Tech"
+export ORG_UNIT="Security Team"
 export COMMON_NAME=${MX_DOMAIN}
 export ENVIRONMENT="PROD" # Set this value to PROD to generate strong passwords for accounts.
 export TEST_EMAIL_ACCOUNTS="royce"
 #################################################################
 
 # This Digial Ocean image was created with a orphaned RPM lock file.
-rm -f /var/lib/rpm/.rpm.lock || :
+rm -f /var/lib/rpm/.rpm.lock && sleep 10 || :
 
 # Add the Extra Packages for Enterprise Linux repository
 dnf -y install epel-release
 
-ls -lha /var/lib/rpm/.rpm.lock || :
+ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 
+# My vimrc. This is optional, nice if you are working in the shell.
+curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
+                                                  
 # Activate Certbot to create signed certificates
 curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
 

@@ -7,7 +7,7 @@ resource "digitalocean_firewall" "email-firewall" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = ["${var.myip}/0"]
+    source_addresses = ["${var.myip}"]
   }
 
   # Unencrypted HTTP required by Certbot

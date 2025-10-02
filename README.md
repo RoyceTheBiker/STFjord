@@ -22,6 +22,7 @@ doctl apps tier instance-size get <instance size slug> [flags]
 
 [Choosing a Droplet size](https://docs.digitalocean.com/products/droplets/concepts/choosing-a-plan/)
 
+[Droplet CPU and RAM sizes](https://www.digitalocean.com/community/questions/how-to-identify-the-same-sizes-as-are-available-through-the-web-interface)
 [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/)
 
 [Remote State](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
