@@ -26,11 +26,6 @@ resource "null_resource" "payload" {
   }
 
   provisioner "file" {
-    source      = "~/Downloads/letsencrypt.mWorks.tbz"
-    destination = "/root/letsencrypt.mWorks.tbz"
-  }
-
-  provisioner "file" {
     source      = "./payload.sh"
     destination = "/root/payload.sh"
   }
