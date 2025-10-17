@@ -73,7 +73,7 @@ Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address, regi
 <!-- 
 ## MFA
 
-Common types of for Multi-Factor Authentication
+Common Types of Multi-Factor Authentication
 
 - Google Authenticator
 - YubiKey
@@ -85,12 +85,22 @@ Common types of for Multi-Factor Authentication
 
 ## The Payload
 
-Everyone that uses this project will need to edit, or completely replace the **payload.sh** script.
-It has been configured to install a mail server for **mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record is controlled by SiliconTao.com DNS. Not changing these values will cause your mail server to not workreplace the **payload.sh** script.
-It has been configured to install a mail server for **mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record is controlled by SiliconTao.com DNS. Not changing these values will cause your mail server to not work.
-The minimum change required would be to **MX_DOMAIN** to match your MX domain registration.
+Everyone who uses this project will need to edit, or completely replace the **payload.sh** script.
 
 Replace the entire **payload.sh** to use this project as a template to build a different project in DigitalOcean using Terraform.
+
+### Payload Variables
+
+#### MX_DOMAIN
+
+The minimum change required would be to **MX_DOMAIN** to match your MX domain registration.
+
+The payload has been configured to install a mail server for **mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record is controlled by SiliconTao.com DNS. Not changing these values will cause your mail server to not work.
+
+#### ENVIRONMENT
+
+In [Part 3 of the Rocky Linux Webmail](https://www.youtube.com/watch?v=iVKNTxWYQcU) videos, user accounts were set up using only **password** as the password.
+In the payload, a new variable was added for ENVIRONMENT. If ENVIRONMENT is set to "PROD", as it is in **payload.sh**, random passwords are generated for the user accounts. This password is not saved or logged anywhere. The administrator must SSH into the mail server in PROD and change the user's password. Changing the ENVIRONMENT value to DEV will cause it to use **password** as the password, and that is not recommended in a production environment.
 
 The major steps in the **payload.sh** are:
 
