@@ -29,7 +29,6 @@ resource "null_resource" "payload" {
     source      = "./payload.sh"
     destination = "/root/payload.sh"
   }
-
   provisioner "remote-exec" {
     inline = [
       "export ADMIN_IP='${chomp(data.http.myip.response_body)}'",

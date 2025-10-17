@@ -2,13 +2,20 @@
 
 ## Digital Ocean CLI
 
+[Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
+
+To use the CLI tool requires an API token for DigitalOcean.
+Use the DigitalOcean control pannel to generate a new token on your DigitalOcean homepage using the API menu entry on the bottom left.
+
 Example of using DO API on the command line.
 
 ```bash
-doctl apps tier instance-size get <instance size slug> [flags]
+doctl auth init
+doctl apps list-regions # To get a list of regions
+doctl compute size list # To get a list of Droplet sizes
 ```
 
-[Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
+[![Testing the token](https://cdn.silicontao.com/RockyLinuxWebmail/doctl_token_sm.png)](https://cdn.silicontao.com/RockyLinuxWebmail/doctl_token.png)
 
 ## Helpfull Links
 
@@ -49,43 +56,79 @@ Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address, regi
 
 # Plugins For Roundcube
 
+<!-- 
 ## MFA
 
-Options for Multi-Factor Authentication
+Common types of for Multi-Factor Authentication
 
 - Google Authenticator
 - YubiKey
 - SMS
 
+-->
+
 # Terraforming
+
+## The Payload
+
+Everyone that uses this project will need to edit, or completely replace the **payload.sh** script.
+It has been configured to install a mail server for **mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record is controlled by SiliconTao.com DNS. Not changing these values will cause your mail server to not workreplace the **payload.sh** script.
+It has been configured to install a mail server for **mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record is controlled by SiliconTao.com DNS. Not changing these values will cause your mail server to not work.
+The minimum change required would be to **MX_DOMAIN** to match your MX domain registration.
+
+Replace the entire **payload.sh** to use this project as a template to build a different project in DigitalOcean using Terraform.
+
+The major steps in the **payload.sh** are:
+
+- Install and setup CertBot, creating signed certificates and a cron job to renew the cert.
+- Install RoundCube, Postfix, and Dovecot from parts 1, 2, and 3
+- Install ClamAV for Postfix from part 4
+- Harden the services, change to using encrypted ports using the signed certificates
+
+## Init
+
+Before running Terraform, the project needs to run **init**. That will read the Terraform source files and download the necessary modules to deploy to DigitalOcean.
+
+```bash
+terraform init
+```
+
+Copy the **settings.example.json** file to a private directory outside of the project, renaming it **settings.json**, and replace the two values in it, your admin token from DigitalOcean and the reserved IP that has been assigned to the MX record.
+
+[Context: "settings.json"]
+
+```json
+{
+        "do_token": "dop_v1_abcdefghijklmnop1234567890",
+        "reserved_ip": "1.2.3.4"
+}
+```
+
+This **settings.json** file does not contain the settings used in **payload.json**. This alows the STFjord project to be used with custom payloads, and no Terraform code changes.
 
 ## Plan
 
 ```bash
-export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
 terraform plan --var-file=~/settings.json
 
 ```
 
 ## Apply
 
-Copy the **settings.json** file and change the values to match your environment.
+This is the command that will begin building the Droplet and run the scripts to install Roundcube Webmail.
 
 ```bash
-export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
 terraform apply --var-file=~/settings.json
 ```
 
 ## Destroy
 
+For development only, using the **destroy** command complete removes the Droplet, leaving nothing behind from the project.
+Repeatedly building and destroying the project will cause CertBot to fail, and each hose can only register for a new certificate once ever seven days.
+
 ```bash
-export TF_VAR_do_token=$(cat ~/.digitalOcean/token)
 terraform destroy 
 ```
-
-.
-
-.
 
 # Test The Webmail Certificate
 
