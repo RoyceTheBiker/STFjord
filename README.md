@@ -68,9 +68,9 @@ Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address, regi
 
  [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
 
+<!-- 
 # Plugins For Roundcube
 
-<!-- 
 ## MFA
 
 Common Types of Multi-Factor Authentication
