@@ -1,5 +1,12 @@
 # STFjord
 
+Silicon Tao Fjord is where the Rocky Linux meets the DigitalOcean.
+
+This project is provided in a Git repository, and builds a Rocky Linux server in DigitalOcean using Terraform. The payload script for Terraform then sets up a Roundcube Webmail service.
+
+This is part 5 in the Rocky Linux webmail series. Parts 1 to 3 are in [Rocky Linux Webmail Server](https://silicontao.com/main/marquis/article/RoyceTheBiker/Rocky%20Linux%20Webmail%20Server). Part 4 is
+[ClamAV For Postfix](https://silicontao.com/main/marquis/article/RoyceTheBiker/ClamAV%20for%20Postfix)
+
 ## Digital Ocean CLI
 
 [Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
@@ -42,9 +49,9 @@ A token is required to run Terraform. The Terraform API needs to perform actions
 
 Setting up a public server requires it to use signed certificates. We can use [Let's Encrypt](https://letsencrypt.org/) to create signed certificates for free, but the certificates are only valid for 90 days. This requires us to setup [CertBot](https://certbot.eff.org/) to automatically renew our certificates.
 
-For CertBot to work, port 80 must be accessable to the public Internet and no service can be using the port. When CertBot runs it will start a service on port 80 and send a request for varification to Let' Encrypt to get a new signed certificate. For this to happen the IP address must be registered in public DNS so that the host is resolvable by name. This is important because IP addresses cannot obtain signed certificates. The controller of the hostname (FQDN) in public DNS records is considered the authority for the FQDN (Fully Qualified Domain Name).
+For CertBot to work, port 80 must be accessible to the public Internet and no service can be using the port. When CertBot runs it will start a service on port 80 and send a request for verification to **Let's Encrypt** to get a new signed certificate. For this to happen the IP address must be registered in public DNS so that the host is resolvable by name. This is important because IP addresses cannot obtain signed certificates. The controller of the hostname (FQDN) in public DNS records is considered the authority for the FQDN (Fully Qualified Domain Name).
 
-When building a server manually, one can start the server then register the IP address with the DNS chosen to control the FQDN. Once the public DNS is able to resolve the hostname, an administrator can return later to setup CertBot, generate certificates, and configure the server to use encypted port. This cannot be done when using Terraform to deploy the server.
+When building a server manually, one can start the server then register the IP address with the DNS chosen to control the FQDN. Once the public DNS is able to resolve the hostname, an administrator can return later to setup CertBot, generate certificates, and configure the server to use encrypted port. This cannot be done when using Terraform to deploy the server.
 
 For Terraform to deploy the server and have it use CertBot for creating signed certificates, one of two things must be true. Terraform configures the DNS records hosted by the cloud provider, and services remain in an off state until CertBot can resolve the hostname on the public DNS, or the IP address must be reserved in advance and a DNS record to resolve the hostname is registered.
 
