@@ -156,7 +156,9 @@ terraform destroy
 
 # Test The Webmail Certificate
 
+Replace the mail host and domain names with the names specified in **payload.sh**
+
 ```bash
-openssl s_client -connect mail.SiliconTao.com:443 2>/dev/null </dev/null | \
+openssl s_client -connect mail.mWorks.tech:443 2>/dev/null </dev/null | \
   sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
 ```
