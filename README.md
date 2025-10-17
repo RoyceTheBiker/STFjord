@@ -7,6 +7,13 @@ This project is provided in a Git repository, and builds a Rocky Linux server in
 This is part 5 in the Rocky Linux webmail series. Parts 1 to 3 are in [Rocky Linux Webmail Server](https://silicontao.com/main/marquis/article/RoyceTheBiker/Rocky%20Linux%20Webmail%20Server). Part 4 is
 [ClamAV For Postfix](https://silicontao.com/main/marquis/article/RoyceTheBiker/ClamAV%20for%20Postfix)
 
+Close the Git repository for STFjord
+
+```bash
+git clone https://gitlab.com/SiliconTao-Systems/STFjord.git
+cd STFjord
+```
+
 ## Digital Ocean CLI
 
 [Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
