@@ -21,6 +21,8 @@ cd STFjord
 To use the CLI tool requires an API token for DigitalOcean.
 Use the DigitalOcean control pannel to generate a new token on your DigitalOcean homepage using the API menu entry on the bottom left.
 
+Tokens are valid for 90 days.
+
 Example of using DO API on the command line.
 
 ```bash
@@ -161,4 +163,10 @@ Replace the mail host and domain names with the names specified in **payload.sh*
 ```bash
 openssl s_client -connect mail.mWorks.tech:443 2>/dev/null </dev/null | \
   sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+```
+
+# Check The Certificate Expiry Date
+
+```bash
+openssl x509 -in /etc/letsencrypt/archive/mail.mworks.tech/fullchain1.pem -enddate -noout
 ```
