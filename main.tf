@@ -26,13 +26,13 @@ resource "null_resource" "payload" {
   }
 
   provisioner "file" {
-    source      = "./payload.sh"
-    destination = "/root/payload.sh"
+    source      = "./payload"
+    destination = "/root/payload"
   }
   provisioner "remote-exec" {
     inline = [
       "export ADMIN_IP='${chomp(data.http.myip.response_body)}'",
-      "bash /root/payload.sh"
+      "bash /root/payload/payload.sh"
     ]
   }
 

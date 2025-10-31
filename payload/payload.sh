@@ -25,6 +25,9 @@ export ENVIRONMENT="PROD"     # Set this value to PROD to generate strong passwo
 export EMAIL_ACCOUNTS="royce" # Space seperated list of account names to create.
 #################################################################
 
+# Change to the directory that this script is in.
+cd $(dirname $0)
+
 # This Digial Ocean image was created with a orphaned RPM lock file.
 rm -f /var/lib/rpm/.rpm.lock && sleep 10 || :
 
@@ -37,14 +40,14 @@ ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
 
 # Activate Certbot to create signed certificates
-curl https://cdn.silicontao.com/RockyLinuxWebmail/CertbotSetup.sh | bash
+[ -f CertbotSetup.sh ] && bash ./CertbotSetup.sh
 
 # Setup Roundcube with database, Postfix, and Dovecot
-curl https://cdn.silicontao.com/RockyLinuxWebmail/RockyLinuxWebmail.sh | bash
+[ -f RockyLinuxWebmail.sh ] && bash ./RockyLinuxWebmail.sh
 
 # Setup ClamAV and Milter for Postfix
-curl https://cdn.silicontao.com/RockyLinuxWebmail/ClamAV4Postfix.sh | bash
+[ -f ClamAV4Postfix.sh ] && bash ./ClamAV4Postfix.sh
 
 # Harden the server.
 # Switch to encrypted ports.
-curl https://cdn.silicontao.com/RockyLinuxWebmail/HardenWebmail.sh | bash
+[ -f HardenWebmail.sh ] && bash ./HardenWebmail.sh
