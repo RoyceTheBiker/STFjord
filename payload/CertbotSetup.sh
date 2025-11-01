@@ -60,7 +60,7 @@ function Wait4RpmLock {
   set +x
 }
 
-if [ letsencrypt.mWorks.tbj ]; then
+if [ -f letsencrypt.mWorks.tbj ]; then
   # For development the previously generated certificates are used.
   tar xfj letsencrypt.mWorks.tbj -C /
   exit 0

@@ -28,6 +28,8 @@ export EMAIL_ACCOUNTS="royce" # Space seperated list of account names to create.
 # Change to the directory that this script is in.
 cd $(dirname $0)
 
+sleep 60
+
 # This Digial Ocean image was created with a orphaned RPM lock file.
 rm -f /var/lib/rpm/.rpm.lock && sleep 10 || :
 

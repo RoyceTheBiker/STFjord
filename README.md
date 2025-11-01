@@ -87,9 +87,9 @@ Common Types of Multi-Factor Authentication
 
 ## The Payload
 
-Everyone who uses this project will need to edit, or completely replace the **payload.sh** script.
+Everyone who uses this project will need to edit **payload/payload.sh**, or completely replace the **payload** directory.
 
-Replace the entire **payload.sh** to use this project as a template to build a different project in DigitalOcean using Terraform.
+Replace the entire **payload** to use this project as a template to build a different project in DigitalOcean using Terraform.
 
 ### Payload Variables
 
@@ -110,6 +110,7 @@ The major steps in the **payload.sh** are:
 - Install RoundCube, Postfix, and Dovecot from parts 1, 2, and 3
 - Install ClamAV for Postfix from part 4
 - Harden the services, change to using encrypted ports using the signed certificates
+L
 
 ## Init
 

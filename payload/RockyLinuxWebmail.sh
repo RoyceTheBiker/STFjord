@@ -12,8 +12,8 @@ LOCATION=${LOCATION-"Regina"}
 ORGANIZATION=${ORGANIZATION-"Silicon Tao"}
 ORG_UNIT=${ORG_UNIT-"IT Department"}
 COMMON_NAME=${MX_DOMAIN}
-ENVIRONMENT="DEV" # Set this value to DEV to generate weak passwords for accounts.
-EMAIL_ACCOUNTS=${TEST_EMAIL_ACCOUNTS-"sam bill lisa tammy"}
+ENVIRONMENT=${ENVIRONMENT-"DEV"} # Set this value to DEV to generate weak passwords for accounts.
+EMAIL_ACCOUNTS=${EMAIL_ACCOUNTS-"sam bill lisa tammy"}
 ADMIN_IP=${ADMIN_IP-"0.0.0.0/0"}
 #################################################################
 
@@ -264,7 +264,7 @@ sed -i /etc/aliases -e 's/^\(abuse:.*\)root/\1admin/'
 
 # Run this so these changes take effect
 newaliases
-
+set -x
 Header "Add Email Accounts"
 for i in $EMAIL_ACCOUNTS; do
   # BASH can uppercase the first letter using ${i^}
