@@ -255,7 +255,7 @@ setsebool -P nis_enabled 1
 Header "Add Admin Account"
 DEFAULT_PASSWORD="password"
 [[ $ENVIRONMENT == "PROD" ]] && {
-  DEFAULT_PASSWORD=$(dd if=/dev/random bs=1 count=50 | md5sum | awk '{print $2}' | cut -b 1-12)
+  DEFAULT_PASSWORD=$(dd if=/dev/random bs=1 count=50 | md5sum | awk '{print $1}' | cut -b 1-12)
 }
 useradd -c "Admin" -s /bin/bash -d /home/admin admin
 printf "${DEFAULT_PASSWORD}\n${DEFAULT_PASSWORD}\n" | passwd admin
