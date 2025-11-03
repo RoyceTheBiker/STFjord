@@ -30,6 +30,9 @@ cd $(dirname $0)
 
 sleep 60
 
+# CreateRollback makes a backup and a rollback script to restore a file before making changes to it.
+install -v -m700 CreateRollback.sh /usr/bin
+
 # This Digial Ocean image was created with a orphaned RPM lock file.
 rm -f /var/lib/rpm/.rpm.lock && sleep 10 || :
 

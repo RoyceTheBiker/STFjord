@@ -45,6 +45,10 @@ function Color {
   esac
 }
 
+function CreateRollback {
+  CreateRollback.sh DT-$(date +%Y%m%d%H%M%S) $@
+}
+
 Header "Harden Rocky Linux Webmail"
 Header "$Release"
 
@@ -52,6 +56,7 @@ Header "Nginx TLS"
 ELL="/etc/letsencrypt/live"
 # The port 80 service needs to be disabled for Certbot to renew certificates every 3 months.
 # The BASH operator ${VAR,,} changes all letters to lowercase.
+CreateRollback /etc/nginx/nginx.conf
 sed -i /etc/nginx/nginx.conf -e '/^ *listen *80/s/80/443 ssl http2/' # Change IPv4 port 80 to be 443
 sed -i /etc/nginx/nginx.conf -e '/^ *listen *.*:80/d'                # Remove IPv6 port 80
 sed -i /etc/nginx/nginx.conf -e '/^ *root/a \
@@ -71,8 +76,7 @@ rm -f ${EPT}/certs/postfix.pem
 ln -s ${ELL}/${MX_HOST,,}.${MX_DOMAIN,,}/fullchain.pem ${EPT}/certs/postfix.pem
 
 # Create a backup of these files
-cp /etc/postfix/main.cf ~/
-cp /etc/postfix/master.cf ~/
+CreateRollback /etc/postfix/main.cf /etc/postfix/master.cf
 
 sed -i /etc/postfix/main.cf -e 's/^smtp_tls_security_level .*/smtp_tls_security_level = encrypt/'
 sed -i /etc/postfix/master.cf -e 's/^\(smtp *inet\)/#\1 /'  # Disable un-encrypted service.
@@ -82,6 +86,7 @@ sed -i /etc/postfix/main.cf -e 's/^\(inet_protocols \).*/\1= ipv4/'
 echo "smtpd_tls_security_level = encrypt"
 systemctl restart postfix.service
 
+CreateRollback /var/www/roundcubemail-1.6.11/config/config.inc.php
 sed -i /var/www/roundcubemail-1.6.11/config/config.inc.php -e "/config..smtp_host../s|=.*|= 'tls://localhost:587';|"
 
 Header "Disable IPv6"
