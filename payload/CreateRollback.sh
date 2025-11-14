@@ -1,16 +1,86 @@
 #!/bin/bash
-
+set -e
 CHGNUMBER=$1
 shift
+DIFF_CHG=$1
 
 VALID_CR=0
 
 function ShowHelp {
-  echo "First argument must be an RFC number starting with CHG and contain a seven digit number."
-  echo "Second and subsequent arguments must be the full path to a directory or files."
-  echo "Backup content is limited to 100MB so as to prevent large rollbacks."
-  echo "sudo CreateRollback.sh CHG1234567 /etc/my.cnf /etc/ssh"
+  echo "CreateRollback.sh is a utility script to archive Linux files before changing them.
+
+  There are two actions it currently performs:
+  1) Create an archive of original files before a change.
+  2) Perform a diff operation to show changes.
+
+  Creating an archive:
+    In this action, an argument is given to mark the type of change: INC, CHG, or SEQ.
+    INC & CHG changes must include a seven-digit change number.
+    SEQ will automatically generate a sequential number for the change.
+    It is recommended never to reuse a change number.
+
+    A second or many additional arguments are given to indicate the files that are to be
+    archived. These arguments can be individual files or entire directories.
+  
+    Archives are stored in the user's home directory under ./ChangeControll/
+
+    A symbolic link is created to always point to the last archive created
+    as ./ChangeControll/last.
+
+    Archive content is limited to 100MB to prevent large rollbacks.
+
+  Perform a diff operation:
+    When given the first argument diff, and the second argument of a change number or last,
+    this action will compare the archived files to their current files, first looking
+    for files that have been added or removed from directories. The second action of
+    the diff is to look at individual files and how they have been changed.
+
+  Example use:
+    sudo CreateRollback.sh CHG1234567 /etc/my.cnf /etc/ssh
+    CreateRollback.sh SEQ ~/.config/nvim
+    CreateRollback.sh diff last"
+
   exit $LINENO
+}
+
+which tar >/dev/null 2>&1 || {
+  echo "Error: tar is required to use this script."
+  exit 1
+}
+
+which rsync >/dev/null 2>&1 || {
+  echo "Warning: rsync is required for the rollback script to work."
+  echo "Install rsync before using rollback"
+  sleep 5
+}
+
+function Color {
+  tput bold
+  case $1 in
+  black) tput setaf 0 ;;
+  red) tput setaf 1 ;;
+  green) tput setaf 2 ;;
+  yellow) tput setaf 3 ;;
+  blue) tput setaf 4 ;;
+  magenta) tput setaf 5 ;;
+  cyan) tput setaf 6 ;;
+  white) tput setaf 7 ;;
+  off) tput sgr0 ;;
+  esac
+}
+
+function GreenAddedFile {
+  Color green
+  echo -n "Added ${1//\</  }"
+  Color off
+  echo
+}
+
+function RedRemovedFile {
+  Color red
+  echo -n "Removed ${1//\> / }"
+  Color off
+  echo
 }
 
 function DereferenceLink {
@@ -44,45 +114,83 @@ function DereferenceLink {
   cd $ORIG_DIR
 }
 
-# Valid CR number
-#[[ "$CHGNUMBER" =~ ^[CI][HN][GC][0-9]{7}$ ]] || {
-#    echo "Please provide a valid CHG or INC number in the format of three capital letters followed by seven digits." >&2
-#    ShowHelp;
-#}
-function ValidTrackingNumberFormat {
+function DiffUtil {
+  CHG_CONTENT=$(ls -d1 ${MY_HOME}/ChangeControl/${CHG_DIFF}* | head -n1)
+  # Get the dir list from the rollback script.
+  # Path ARGS for rollback are comments in the rollback script.
+  RB_SCRIPT="${MY_HOME}/ChangeControl/rollback-${CHG_DIFF}.sh"
+  PATH_ARGS=($(cat ${RB_SCRIPT} | sed -ne '/#DIR_ARGS/,/#FILE_ARGS/p' | grep -vE "^#DIR_ARGS|^$|#FILE_ARGS" | sed -e 's/^#//'))
+  for DPATH in ${PATH_ARGS[@]}; do
+    diff <(find ${DPATH} -type f | sort) <(
+      cd ${CHG_CONTENT}
+      find .${DPATH} -type f | sort | sed -e 's/^.//'
+    ) | grep -E "^[<>]" | while read LINE; do
+      $(echo ${LINE} | grep -q "^<") && {
+        GreenAddedFile "$LINE"
+      } || :
+      $(echo ${LINE} | grep -q "^>") && {
+        RedRemovedFile "$LINE"
+      } || :
+    done
+  done
+
+  find ${CHG_CONTENT} -type f | while read LINE; do
+    [ -f ${LINE} ] && [ -f $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||") ] && {
+      A=$(sum $LINE | awk '{print $1}')
+      B=$(sum $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||") | awk '{print $1}')
+      # Sum values may start with zero, so they need to be considered strings to avoid base change.
+      [[ "${A}" != "${B}" ]] && {
+        echo "Changes in $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||")"
+        diff --color=always $LINE $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||")
+      } || :
+    }
+  done
+  exit 0
+}
+
+CHG_DIFF="last"
+MY_HOME=$(getent passwd $(id -un) | cut -d: -f6)
+function ProcessArguments {
+  ACTION="Create Rollback"
   [[ "${1}" =~ ^INC[0-9]{7}$ ]] && {
-    # echo "return from line $LINENO"
     return 0
   }
   [[ "${1}" =~ ^CHG[0-9]{7}$ ]] && {
     # echo "return from line $LINENO"
     return 0
   }
-  [[ "${1}" =~ ^DT-[0-9]{14} ]] && {
-    # echo "return from line $LINENO"
-    return 0
-  }
-  [[ "${1}" =~ ^TK-[0-9]{5}+ ]] && {
-    # echo "return from line $LINENO"
-    return 0
-  }
-  [[ "${1}" =~ ^B-[0-9]{5}+ ]] && {
-    # echo "return from line $LINENO"
-    return 0
-  }
-  [[ "${1}" =~ ^D-[0-9]{5}+ ]] && {
-    # echo "return from line $LINENO"
-    return 0
-  }
-  [[ "${1}" =~ ^I-[0-9]{5}+ ]] && {
-    # echo "return from line $LINENO"
+  [[ "${1}" == SEQ ]] && {
+    CHG_NUMBER=0
+    [ -d ${MY_HOME}/ChangeControl/ ] && {
+      while ls $MY_HOME/ChangeControl/ | grep -q $(printf "%07d" $CHG_NUMBER); do
+        ((CHG_NUMBER += 1))
+      done
+    }
+    CHGNUMBER="SEQ$(printf "%07d" $CHG_NUMBER)"
+    echo "SEQ$(printf "%07d" $CHG_NUMBER)"
     return 0
   }
   # echo "return from line $LINENO"
+  [[ "${1}" == "diff" ]] && {
+    ACTION="diff"
+    [[ "${DIFF_CHG}x" != "x" ]] && {
+      CHG_DIFF=${DIFF_CHG}
+      [[ "${DIFF_CHG}" == "last" ]] && {
+        CHG_DIFF=$(stat --format=%N ${MY_HOME}/ChangeControl/last | awk '{print $NF}' | sed -e "s/'//g" | cut -d_ -f1)
+      } || {
+        CHG_DIFF=${DIFF_CHG}
+      }
+    } || exit 1
+    DiffUtil
+    exit 0
+  }
+  [[ "${1}" == "-h" ]] || [[ "${1}" == "--help" ]] && {
+    ShowHelp
+  }
   return 1
 }
 
-ValidTrackingNumberFormat "${CHGNUMBER}" || {
+ProcessArguments "${CHGNUMBER}" || {
   echo "Please provide a valid change, incident, story, task, defect or issue number starting with capital letters followed by digits."
   ShowHelp
 }
@@ -95,7 +203,6 @@ echo "SOME_TARGET_FILES_EXIST=0" >${TMPS}_VARS
 echo "TARGETS=" >${TMPS}_TARGETS
 
 function AddSize {
-  #echo "AddSize $1"
   file $1 | grep -q compressed && {
     echo "Ignore compressed files." >>${TMPS}_rpt
     return
@@ -117,8 +224,13 @@ function AddSize {
 }
 export -f AddSize
 
+DIR_ARGS=
+FILE_ARGS=
 for i in $@; do
   [ -f $i ] && {
+    # If argument is a file
+    # Push file string onto array stack
+    FILE_ARGS=("${FILE_ARGS[@]}" "${i}")
     THIS_SIZE=$(du -bs $i | cut -f1)
     ((THIS_SIZE > 0)) && SOME_TARGET_FILES_EXIST=1
     source $TMPS
@@ -128,7 +240,11 @@ for i in $@; do
     TARGETS="$TARGETS $i"
     echo "TARGETS=\"$TARGETS\"" >${TMPS}_TARGETS
     echo "SOME_TARGET_FILES_EXIST=1" >${TMPS}_VARS
-  } || {
+  }
+  [ -d $i ] && {
+    # Push directory string onto array stack
+    DIR_ARGS=("${DIR_ARGS[@]}" "${i}")
+    # If argument is a directory
     # echo "find ${i} -type f -exec bash -c 'AddSize \"{}\"' \;"
     find ${i} -type f -exec bash -c 'AddSize "{}"' \;
   }
@@ -142,75 +258,92 @@ IGNORE_LOG_COUNT=0
 ((IGNORE_ZIP_COUNT > 0 || IGNORE_LOG_COUNT > 0)) && {
   ((IGNORE_ZIP_COUNT > 0)) && echo "Ignoring $IGNORE_ZIP_COUNT compressed files"
   ((IGNORE_LOG_COUNT > 0)) && echo "Ignoring $IGNORE_LOG_COUNT log files"
-  echo "To included these files identify them explicitly in the arguments."
+  echo "To include these files, identify them explicitly in the arguments."
   sleep 5
 }
 
 source $TMPS
-# cat ${TMPS}_TARGETS
 source ${TMPS}_TARGETS
 source ${TMPS}_VARS
 rm -f $TMPS ${TMPS}_TARGETS ${TMPS}_VARS
-
 if [ $SOME_TARGET_FILES_EXIST -eq 0 ]; then
   echo "No targets given."
   ShowHelp
 fi
 if [ $TOTAL_SIZE -gt 104857600 ]; then
-  echo "Backup size would exceed limit. The limit is there to prevent accidentally creating a super large backup. If you need a super large backup consider coping the files off to another server."
+  echo "Backup size would exceed limit. The limit is there to prevent accidentally creating a large backup. 
+If you need a large backup, consider copying the files off to another server."
   ShowHelp
 fi
 
-MY_HOME=$(getent passwd $(id -un) | cut -d: -f6)
 CR_DATE=$(date +%F_%H%M%S)
-rm -f $MY_HOME/ChangeControl/last
-ROLL_BACK_DIR=$MY_HOME/ChangeControl/${CHGNUMBER}_${CR_DATE}
-/bin/mkdir -p ${ROLL_BACK_DIR}
+rm -f $MY_HOME/ChangeControl/last || :
+rm -f $MY_HOME/ChangeControl/rollback-last.sh || :
+
+ROLLBACK_DIR=$MY_HOME/ChangeControl/${CHGNUMBER}_${CR_DATE}
+/bin/mkdir -p ${ROLLBACK_DIR}
 /bin/ln -s ${CHGNUMBER}_${CR_DATE} $MY_HOME/ChangeControl/last
-ROLL_BACK_SH=$MY_HOME/ChangeControl/rollback-${CHGNUMBER}.sh
-BACKUP_LIST=${ROLL_BACK_DIR}.list
+ROLLBACK_SH=$MY_HOME/ChangeControl/rollback-${CHGNUMBER}.sh
+BACKUP_LIST=${ROLLBACK_DIR}.list
 
-if [ ! -f $ROLL_BACK_SH ]; then
-  cat >>$ROLL_BACK_SH <<-EOF
-	#!/bin/bash 
-	echo "This rollback script will not restart any services. That would be done manually where needed."
-	echo "This rollback will not remove new files from entire directories that are backed up, that too must be done manually."
-	cd ${ROLL_BACK_DIR}
-	tar cf - ./ | tar xvf - -C /
-	EOF
+if [ ! -f $ROLLBACK_SH ]; then
+  cat >>$ROLLBACK_SH <<-EOF
+#!/bin/bash
+echo "This rollback script will not restart any services. That sould be done manually if needed."
+#DIR_ARGS
+ 
+#FILE_ARGS
+
+# Script
+cd ${ROLLBACK_DIR}
+(which rsync >/dev/null 2>&1) && {
+  rsync --archive --verbose --checksum ./ /  
+} || {
+  tar cf - ./ | tar xvf - -C /
+}
+EOF
+  ln -s ${ROLLBACK_SH} $MY_HOME/ChangeControl/rollback-last.sh
   rm -f $BACKUP_LIST
-fi
 
-#while [ ${#TARGETS[@]} -gt 0 ]; do
-#	TARGET_FILE=${TARGETS[0]}
-#	unset TARGETS[0]; TARGETS=( "${TARGETS[@]}" );
+  while [ ${#FILE_ARGS[@]} -gt 0 ]; do
+    # Read the file string off the array stack
+    RF=${FILE_ARGS[(${#FILE_ARGS[@]} - 1)]}
+    sed -i $ROLLBACK_SH -e "/#FILE_ARGS/a#${RF//\//\\/}"
+    # Pop the string off the array stack
+    FILE_ARGS=(${FILE_ARGS[@]:0:$((${#FILE_ARGS[@]} - 1))})
+  done
+
+  while [ ${#DIR_ARGS[@]} -gt 0 ]; do
+    # Read the directory string off the array stack
+    RD=${DIR_ARGS[(${#DIR_ARGS[@]} - 1)]}
+    # Pop the string off the array stack
+    sed -i $ROLLBACK_SH -e "/#DIR_ARGS/a#${RD//\//\\/}"
+    DIR_ARGS=(${DIR_ARGS[@]:0:$((${#DIR_ARGS[@]} - 1))})
+    echo "rsync --archive --verbose --delete-after --checksum .${RD}/ ${RD}/" >>$ROLLBACK_SH
+  done
+fi
 
 for TARGET_FILE in $TARGETS; do
   cd /
-  [ ! -f ${ROLL_BACK_DIR}${TARGET_FILE} ] && {
-    #md5sum ${TARGET_FILE}
-    #/bin/ls -dl ${TARGET_FILE}
-    echo "${TARGET_FILE} -> ${ROLL_BACK_DIR}${TARGET_FILE}"
-    echo "${TARGET_FILE}" >>$BACKUP_LIST
-    tar cf - ${TARGET_FILE} 2>/dev/null | tar xf - -C ${ROLL_BACK_DIR}
+  [ ! -f ${ROLLBACK_DIR}${TARGET_FILE} ] && {
+    tar cf - ${TARGET_FILE} 2>/dev/null | tar xf - -C ${ROLLBACK_DIR}
     [ -L ${TARGET_FILE} ] && {
       REAL_TARGET=$(DereferenceLink ${TARGET_FILE})
       [ ${#REAL_TARGET} -eq 0 ] && {
-        #echo "DereferenceLink returned a blank string from '${TARGET_FILE}'"
-        #exit 123
         echo "Broken link '${TARGET_FILE}'" >&2
       } || {
         echo "Target '${TARGET_FILE}' is a symbolic link, the target '$REAL_TARGET' will also be archived."
         TARGETS=("${TARGETS[@]}" "$REAL_TARGET")
       }
-    }
-    [ -f ${TARGET_FILE} ] && echo "# diff ${TARGET_FILE} $MY_HOME/ChangeControl/last/${TARGET_FILE}"
+    } || :
   } || {
     echo "It looks like this rollback has already been created."
-    echo "${ROLL_BACK_DIR}${TARGET_FILE} already exists."
+    echo "${ROLLBACK_DIR}${TARGET_FILE} already exists."
   }
-  echo
 done
-echo "Your rollback script to undo these changed files is '$ROLL_BACK_SH'"
+echo "Your rollback script to undo these changed files is '$ROLLBACK_SH'"
 echo "For your convenience the symlink $MY_HOME/ChangeControl/last temporarily points to ${CHGNUMBER}_${CR_DATE}"
-echo "When done making a change you should diff the original files from the archive."
+echo "When done making a change, you should diff the original files from the archive."
+echo "Use:"
+echo "   CreateRollback.sh diff ${CHGNUMBER}"
+echo

@@ -134,20 +134,42 @@ systemctl enable nginx.service
 systemctl start nginx.service
 
 Header "Firewall"
+function removeProtocols {
+  firewall-cmd --list-all --zone=$1 | grep services | cut -d: -f2 | while read -r LINE; do
+    for i in $LINE; do
+      firewall-cmd --zone=$1 --remove-service=$i
+    done
+  done
+}
+
+function ShowStatus {
+  firewall-cmd --get-active-zones
+  echo "------------------------------"
+  firewall-cmd --list-all --zone=admin-ssh
+  echo
+  firewall-cmd --list-all --zone=public
+}
+
 dnf -y install firewalld || :
 systemctl start firewalld.service
 systemctl enable firewalld.service
-#firewall-cmd --permanent --new-zone=admin-ssh
-#firewall-cmd --reload
-firewall-cmd --zone=internal --add-port=22/tcp
-firewall-cmd --zone=internal --add-source=${ADMIN_IP}
+
+CreateRollback.sh SEQ /etc/firewalld/
+firewall-cmd --permanent --new-zone=admin-ssh
+firewall-cmd --reload
+removeProtocols admin-ssh
+firewall-cmd --permanent --zone=admin-ssh --add-source=${ADMIN_IP}
+firewall-cmd --permanent --zone=admin-ssh --set-target=ACCEPT
+firewall-cmd --reload
+firewall-cmd --zone=admin-ssh --add-port=22/tcp
+
+removeProtocols public
 firewall-cmd --zone=public --add-port=80/tcp
 firewall-cmd --zone=public --add-port=443/tcp
-firewall-cmd --permanent --zone=internal --set-target=ACCEPT
 firewall-cmd --runtime-to-permanent
 firewall-cmd --reload
-firewall-cmd --get-active-zones
-firewall-cmd --list-ports
+ShowStatus
+CreateRollback.sh SEQ /etc/firewalld/
 
 Header "RoundCube"
 Header "Downloading RC"

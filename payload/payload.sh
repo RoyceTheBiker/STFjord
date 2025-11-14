@@ -28,7 +28,7 @@ export EMAIL_ACCOUNTS="royce" # Space seperated list of account names to create.
 # Change to the directory that this script is in.
 cd $(dirname $0)
 
-sleep 60
+sleep 20
 
 # CreateRollback makes a backup and a rollback script to restore a file before making changes to it.
 install -v -m700 CreateRollback.sh /usr/bin
@@ -56,3 +56,6 @@ curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
 # Harden the server.
 # Switch to encrypted ports.
 [ -f HardenWebmail.sh ] && bash ./HardenWebmail.sh
+
+# Just for dev, stand up the server then turn it off
+halt -p

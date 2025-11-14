@@ -50,14 +50,12 @@ Header "$Release"
 
 # About 10% of the deployments fail because something leaves the lock file behind.
 function Wait4RpmLock {
-  set -x
   [[ -f /var/lib/rpm/.rpm.lock ]] && {
     ps -ef | grep -iE "rpm|dnf"
     ls -lha /var/lib/rpm/
     sleep 20
     rm -vf /var/lib/rpm/.rpm.lock || :
   }
-  set +x
 }
 
 if [ -f letsencrypt.mWorks.tbj ]; then
