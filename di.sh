@@ -12,7 +12,7 @@ git diff-index --quiet HEAD -- && {
 }
 
 # Put first window on 1 because 0 is at the far end of thee keyboard
-tmux new-session -s STFjord_Dev -n shell -d "${SHELL}"
+tmux new-session -s STFjord_Dev -n shell -d "btop"
 
 tmux new-window -t "STFjord_Dev:1" -n NeoVim 'nvim' # start without file explorer
 

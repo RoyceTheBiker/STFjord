@@ -2,7 +2,7 @@
 
 Silicon Tao Fjord is where the Rocky Linux meets the DigitalOcean.
 
-This project is provided in a Git repository and builds a Rocky Linux server in DigitalOcean using Terraform. The payload script for Terraform then sets up a Roundcube Webmail service.
+This project is hosted in a Git repository and utilizes Terraform to build a Rocky Linux server on DigitalOcean. The payload script for Terraform then sets up a Roundcube Webmail service.
 
 This is part 5 in the Rocky Linux webmail series. Parts 1 to 3 are in [Rocky Linux Webmail Server](https://silicontao.com/main/marquis/article/RoyceTheBiker/Rocky%20Linux%20Webmail%20Server). Part 4 is
 [ClamAV For Postfix](https://silicontao.com/main/marquis/article/RoyceTheBiker/ClamAV%20for%20Postfix)
@@ -19,14 +19,17 @@ cd STFjord
 [Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
 
 Using the CLI tool requires an API token for DigitalOcean.
-Use the DigitalOcean control panel to generate a new token on your DigitalOcean homepage using the API menu entry on the bottom left.
+Use the DigitalOcean control panel to generate a new token on your DigitalOcean homepage by selecting the API menu entry located at the bottom left.
 
 Tokens are valid for 90 days.
+To remove an old token, use ``doctl auth remove --context default``
+
+More about [doctl auth](https://docs.digitalocean.com/reference/doctl/reference/auth/)
 
 Example of using DO API on the command line.
 
 ```bash
-doctl auth init
+doctl auth init         # To set the API token
 doctl apps list-regions # To get a list of regions
 doctl compute size list # To get a list of Droplet sizes
 ```
