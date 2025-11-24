@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source $(dirname $0)/lib.sh
+Header "Harden Postfix"
 CreateRollback.sh SEQ /etc/postfix/main.cf /etc/postfix/master.cf
 sed -i /etc/postfix/main.cf -e 's/^smtp_tls_security_level .*/smtp_tls_security_level = encrypt/'
 sed -i /etc/postfix/master.cf -e 's/^\(smtp *inet\)/#\1 /'  # Disable un-encrypted service.

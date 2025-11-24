@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source $(dirname $0)/lib.sh
-Header "Nginx TLS"
+Header "Harden Nginx TLS"
 ELL="/etc/letsencrypt/live"
 
 # The port 80 service needs to be disabled for Certbot to renew certificates every 3 months.

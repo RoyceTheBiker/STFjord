@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source $(dirname $0)/lib.sh
-Header "Link certificates"
+Header "Harden Link certificates"
 
 EPT="/etc/pki/tls"
 CreateRollback.sh SEQ ${EPT}
