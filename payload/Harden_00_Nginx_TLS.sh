@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source $(dirname $0)/lib.sh
 Header "Nginx TLS"
 ELL="/etc/letsencrypt/live"
 

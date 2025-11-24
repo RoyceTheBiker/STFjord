@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source $(dirname $0)/lib.sh
 Header "Link certificates"
 
 EPT="/etc/pki/tls"

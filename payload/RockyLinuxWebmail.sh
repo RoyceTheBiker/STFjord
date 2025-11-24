@@ -30,34 +30,7 @@ echo "::1 $(hostname -s) $(hostname -f)" >>/etc/hosts
 }
 
 LAST_SECTION=
-function Header {
-  LAST_SECTION="$1"
-  Color yellow
-  printf "%0.s-" {1..40}
-  printf "\n    "
-  Color cyan
-  printf "%s   \n" "$1"
-  Color yellow
-  printf "%0.s-" {1..40}
-  Color off
-  echo
-}
-
-function Color {
-  tput bold
-  case $1 in
-  black) tput setaf 0 ;;
-  red) tput setaf 1 ;;
-  green) tput setaf 2 ;;
-  yellow) tput setaf 3 ;;
-  blue) tput setaf 4 ;;
-  magenta) tput setaf 5 ;;
-  cyan) tput setaf 6 ;;
-  white) tput setaf 7 ;;
-  off) tput sgr0 ;;
-  esac
-}
-
+source $(dirname $0)/lib.sh
 Header "Rocky Linux Webmail setup"
 Header $Release
 
@@ -286,7 +259,6 @@ sed -i /etc/aliases -e 's/^\(abuse:.*\)root/\1admin/'
 
 # Run this so these changes take effect
 newaliases
-set -x
 Header "Add Email Accounts"
 for i in $EMAIL_ACCOUNTS; do
   # BASH can uppercase the first letter using ${i^}
