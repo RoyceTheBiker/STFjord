@@ -1,0 +1,6 @@
+super-linter:
+  image: github/super-linter
+  script:
+    - npx github/super-linter
+  only:
+    - merge_requests
