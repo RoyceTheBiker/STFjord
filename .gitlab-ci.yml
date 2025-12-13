@@ -4,7 +4,10 @@ before_script:
 
 super-linter:
   image: github/super-linter
+  before_script:
+  - export GITHUB_SHA=$(git rev-parse --short=8 HEAD)
   script:
-    - npx github/super-linter
+    - "env"
+    - "echo npx github/super-linter"
   only:
     - merge_requests
