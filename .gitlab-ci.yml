@@ -1,8 +1,12 @@
 super-linter:
   image: ghcr.io/super-linter/super-linter:latest
   volumes:
-    - /builds/SiliconTao-Systems/STFjordi:/tmp/lint
+    name: linter-temp
+    path: /builds/SiliconTao-Systems/STFjordi:/tmp/lint
+    mode: rw
+    persist: true
   script:
+    - env
     - echo "npx github/super-linter"
   only:
     - merge_requests
