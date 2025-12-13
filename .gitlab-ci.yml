@@ -1,3 +1,7 @@
+before_script:
+  - echo "Set the GITHUB_SHA value to the commit SHA"
+  - export GITHUB_SHA=$(git rev-parse HEAD)
+
 super-linter:
   image: github/super-linter
   script:
