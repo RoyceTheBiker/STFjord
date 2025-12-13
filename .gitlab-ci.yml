@@ -1,14 +1,10 @@
-# you can delete this line if you're not using Docker
-image: node:latest
-
-before_script:
-  - echo "Set the GITHUB_SHA value to the commit SHA"
-  - export GITHUB_SHA=$(git rev-parse HEAD)
-
 super-linter:
-#  image: github/super-linter
-#  before_script:
-#  - export GITHUB_SHA="dcb763145bf74b9e29e02ab4cfb464879d20b967"
+  image: ghcr.io/super-linter/super-linter:latest
+  variables:
+    - RUN_LOCAL: true
+    - LOG_LEVEL: DEBUG
+  volumes:
+    - /builds/SiliconTao-Systems/STFjordi:/tmp/lint
   script:
     - env
     - echo "npx github/super-linter"
