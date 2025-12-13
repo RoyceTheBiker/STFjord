@@ -1,5 +1,7 @@
 super-linter:
   image: github/super-linter
+  before_script:
+    - export GITHUB_SHA=$(git rev-parse HEAD)
   script:
     - npx github/super-linter
   only:
