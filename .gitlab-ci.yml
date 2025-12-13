@@ -5,7 +5,7 @@ before_script:
 super-linter:
   image: github/super-linter
   before_script:
-  - export GITHUB_SHA=$(git rev-parse --short=8 HEAD)
+  - export GITHUB_SHA="dcb763145bf74b9e29e02ab4cfb464879d20b967"
   script:
     - env
     - echo "npx github/super-linter"
