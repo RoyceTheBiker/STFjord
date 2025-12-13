@@ -3,7 +3,6 @@ super-linter:
   volumes:
     - /builds/SiliconTao-Systems/STFjordi:/tmp/lint
   script:
-    - env
     - echo "npx github/super-linter"
   only:
     - merge_requests
