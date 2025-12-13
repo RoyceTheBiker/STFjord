@@ -16,15 +16,28 @@ export MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
   exit 6
 }
 
+RLWM_HL=${HOME}/RLWM_Harden_steps
+mkdir -pv ${RLWM_HL}
+
 source $(dirname $0)/lib.sh
 
 LAST_SECTION=
 Header "Harden Rocky Linux Webmail"
 Header "$Release"
 
+RESUME=false
+[[ "${1}x" == "--resume" ]] && RESUME=true
+
 for i in Harden_*; do
-  # Create a backup of these files
-  source ${i}
+  if [[ !${RESUME} || [ ! -f ${RLWM_HL}/${i} ] ]]; then
+    # Create a backup of these files
+    source ${i}
+    grep CreateRollback ${TRAP_LOG} | head >${RLWM_HL}/${i}
+  fi
 done
+
+# Generate a security audit report
+dnf install lynis
+lynis audit system
 
 # End of script
