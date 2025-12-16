@@ -4,17 +4,17 @@ Release="Thu 30 Oct 2025 17:07:37 MDT"
 
 #################################################################
 # Change these values for your mail server
-MX_HOST=${MX_HOST-"mail"}
-MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
-COUNTRY=${COUNTRY-"CA"}
-STATE=${STATE-"Saskatchewan"}
-LOCATION=${LOCATION-"Regina"}
-ORGANIZATION=${ORGANIZATION-"Silicon Tao"}
-ORG_UNIT=${ORG_UNIT-"IT Department"}
-COMMON_NAME=${MX_DOMAIN}
-ENVIRONMENT=${ENVIRONMENT-"DEV"} # Set this value to DEV to generate weak passwords for accounts.
-EMAIL_ACCOUNTS=${EMAIL_ACCOUNTS-"sam bill lisa tammy"}
-ADMIN_IP=${ADMIN_IP-"0.0.0.0/0"}
+export MX_HOST=${MX_HOST-"mail"}
+export MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
+export COUNTRY=${COUNTRY-"CA"}
+export STATE=${STATE-"Saskatchewan"}
+export LOCATION=${LOCATION-"Regina"}
+export ORGANIZATION=${ORGANIZATION-"Silicon Tao"}
+export ORG_UNIT=${ORG_UNIT-"IT Department"}
+export COMMON_NAME=${MX_DOMAIN}
+export ENVIRONMENT=${ENVIRONMENT-"DEV"} # Set this value to DEV to generate weak passwords for accounts.
+export EMAIL_ACCOUNTS=${EMAIL_ACCOUNTS-"sam bill lisa tammy"}
+export ADMIN_IP=${ADMIN_IP-"0.0.0.0/0"}
 #################################################################
 
 hostnamectl set-hostname ${MX_HOST}.${MX_DOMAIN}

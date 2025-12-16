@@ -9,3 +9,9 @@ variable "reserved_ip" {
   type        = string
 }
 
+variable "settings_json" {
+  description = "The settings.json file to upload"
+  default     = ""
+  type        = string
+}
+

@@ -13,22 +13,20 @@ set -e
 
 #################################################################
 # Change these values for your mail server
-export MX_HOST="mail"
-export MX_DOMAIN="mWorks.tech"
-export COUNTRY="US"
-export STATE="Texas"
-export LOCATION="Dallas"
-export ORGANIZATION="Machine Works Tech"
-export ORG_UNIT="Security Team"
+export MX_HOST=${MX_HOST-"mail"}
+export MX_DOMAIN=${MX_HOST-"mWorks.tech"}
+export COUNTRY=${COUNTRY-"US"}
+export STATE=${STATE-"Texas"}
+export LOCATION=${LOCATION-"Dallas"}
+export ORGANIZATION=${ORGANIZATION-"Machine Works Tech"}
+export ORG_UNIT=${ORG_UNIT-"Security Team"}
 export COMMON_NAME=${MX_DOMAIN}
-export ENVIRONMENT="PROD"     # Set this value to PROD to generate strong passwords for accounts.
-export EMAIL_ACCOUNTS="royce" # Space seperated list of account names to create.
+export ENVIRONMENT=${ENVIRONMENT-"PROD"}        # Set this value to PROD to generate strong passwords for accounts.
+export EMAIL_ACCOUNTS=${EMAIL_ACCOUNTS-"royce"} # Space seperated list of account names to create.
 #################################################################
 
 # Change to the directory that this script is in.
 cd $(dirname $0)
-
-sleep 20
 
 # CreateRollback makes a backup and a rollback script to restore a file before making changes to it.
 install -v -m700 CreateRollback.sh /usr/bin
@@ -40,6 +38,12 @@ rm -f /var/lib/rpm/.rpm.lock && sleep 10 || :
 dnf -y install epel-release
 
 ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
+
+cat settings.json | jq
+
+halt
+exit
+sleep 20
 
 # My vimrc. This is optional, nice if you are working in the shell.
 curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc

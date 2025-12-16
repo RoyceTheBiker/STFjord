@@ -26,6 +26,11 @@ resource "null_resource" "payload" {
   }
 
   provisioner "file" {
+    source      = var.settings_json
+    destination = "/root/settings.json"
+  }
+
+  provisioner "file" {
     source      = "./payload"
     destination = "/root/payload"
   }
