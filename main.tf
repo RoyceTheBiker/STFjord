@@ -26,14 +26,15 @@ resource "null_resource" "payload" {
   }
 
   provisioner "file" {
-    source      = var.settings_json
-    destination = "/root/settings.json"
-  }
-
-  provisioner "file" {
     source      = "./payload"
     destination = "/root/payload"
   }
+
+  provisioner "file" {
+    source      = var.settings_json
+    destination = "/root/payload/settings.json"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "export ADMIN_IP='${chomp(data.http.myip.response_body)}'",
