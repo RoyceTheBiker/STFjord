@@ -3,15 +3,23 @@ variable "do_token" {
   type        = string
 }
 
+variable "MX_HOST" {
+  description = "The hostname of the email server"
+  type        = string
+}
+
+variable "MX_DOMAIN" {
+  description = "The domain name of the email server"
+  type        = string
+}
+
 variable "reserved_ip" {
   description = "Reserved Public IP"
-  default     = ""
   type        = string
 }
 
 variable "settings_json" {
   description = "The settings.json file to upload"
-  default     = ""
   type        = string
 }
 

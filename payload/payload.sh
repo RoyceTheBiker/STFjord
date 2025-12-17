@@ -14,7 +14,7 @@ set -e
 #################################################################
 # Change these values for your mail server
 export MX_HOST=${MX_HOST-"mail"}
-export MX_DOMAIN=${MX_HOST-"mWorks.tech"}
+export MX_DOMAIN=${MX_DOMAIN-"mWorks.tech"}
 export COUNTRY=${COUNTRY-"US"}
 export STATE=${STATE-"Texas"}
 export LOCATION=${LOCATION-"Dallas"}
@@ -36,6 +36,7 @@ rm -f /var/lib/rpm/.rpm.lock && sleep 10 || :
 
 # Add the Extra Packages for Enterprise Linux repository
 dnf -y install epel-release
+dnf -y install jq
 
 ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 

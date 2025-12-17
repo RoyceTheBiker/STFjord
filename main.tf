@@ -1,6 +1,6 @@
 resource "digitalocean_droplet" "webmail" {
   image  = "rockylinux-9-x64"
-  name   = "email"
+  name   = format("%s.%s", var.MX_HOST, var.MX_DOMAIN)
   region = "tor1"
   size   = "s-2vcpu-4gb"
   ssh_keys = [
