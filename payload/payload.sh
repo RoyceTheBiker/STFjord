@@ -13,6 +13,8 @@ set -e
 
 #################################################################
 # Change these values for your mail server
+# When using STFjord to deploy with Terraform, these values are
+# replace by those in settings.json
 export MX_HOST=${MX_HOST-"mail"}
 export MX_DOMAIN=${MX_DOMAIN-"mWorks.tech"}
 export COUNTRY=${COUNTRY-"US"}
@@ -42,8 +44,6 @@ ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 
 cat settings.json | jq
 
-halt
-exit
 sleep 20
 
 # My vimrc. This is optional, nice if you are working in the shell.

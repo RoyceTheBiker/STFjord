@@ -4,6 +4,7 @@ Release="Sat  4 Oct 2025 11:45:22 MDT"
 
 #################################################################
 # Change these values for your mail server
+# These values are passed in from RockyLinuxWebmail.sh
 MX_HOST=${MX_HOST-"mail"}
 MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
 #################################################################
