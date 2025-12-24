@@ -31,10 +31,6 @@ ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 # the exported variables need to be availble at this level.
 source loadSettings.sh
 
-sleep 20
-echo oops
-halt -p
-
 # My vimrc. This is optional, nice if you are working in the shell.
 curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
 
