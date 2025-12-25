@@ -27,10 +27,10 @@ Header "Harden Rocky Linux Webmail"
 Header "$Release"
 
 RESUME=false
-[[ "${1}x" == "--resume" ]] && RESUME=true
+[[ "${1}x" == "--resumex" ]] && RESUME=true || :
 
 for i in Harden_*; do
-  if [[ !${RESUME} || [ ! -f ${RLWM_HL}/${i} ] ]]; then
+  if [[ ${RESUME} == false ]] || [[ ! -f ${RLWM_HL}/${i} ]]; then
     # Create a backup of these files
     source ${i}
     grep CreateRollback ${TRAP_LOG} | head >${RLWM_HL}/${i}
