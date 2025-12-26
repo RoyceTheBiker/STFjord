@@ -38,7 +38,7 @@ for i in Harden_*; do
 done
 
 # Generate a security audit report
-dnf install lynis
+dnf -y install lynis
 lynis audit system
 
 # End of script
