@@ -31,6 +31,13 @@ resource "digitalocean_firewall" "email-firewall" {
   # Encrypted SMTPS
   inbound_rule {
     protocol         = "tcp"
+    port_range       = "465"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Encrypted SMTPS
+  inbound_rule {
+    protocol         = "tcp"
     port_range       = "587"
     source_addresses = ["0.0.0.0/0"]
   }

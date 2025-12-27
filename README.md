@@ -233,7 +233,7 @@ Replace the mail host and domain names with the names specified in the
 
 ```bash
 openssl s_client -connect mail.mWorks.tech:443 2>/dev/null </dev/null | \
-  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+  openssl x509 -text -noout | head -n 25  
 ```
 
 ## Check The Certificate Expiry Date
