@@ -38,7 +38,7 @@ timedatectl set-timezone ${TIME_ZONE}
 
 # Change the local logging to use the new TZ
 echo "TZ=\"${TIME_ZONE}\"" >>/etc/sysconfig/rsyslog
-ystemctl restart rsyslog.service
+systemctl restart rsyslog.service
 
 # My vimrc. This is optional, nice if you are working in the shell.
 curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
