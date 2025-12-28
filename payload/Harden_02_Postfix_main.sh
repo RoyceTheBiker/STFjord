@@ -6,7 +6,7 @@ CreateRollback.sh SEQ /etc/postfix/
 
 # Changes to main.cf
 sed -i /etc/postfix/main.cf -e 's/^smtp_tls_security_level .*/smtp_tls_security_level = encrypt/'
-sed -i /etc/postfix/main.cf -e 's/^smtpd_tls_security_level .*/smtpd_tls_security_level = encrypt/'
+sed -i /etc/postfix/main.cf -e 's/^smtpd_tls_security_level .*/smtpd_tls_security_level = may/'
 sed -i /etc/postfix/main.cf -e 's/^\(inet_protocols \).*/\1= ipv4/'
 copy the line smtp_tls_CAfile to smtpd_tls_CAfile
 
