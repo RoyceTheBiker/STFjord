@@ -31,6 +31,15 @@ ls -lha /var/lib/rpm/.rpm.lock && sleep 10 || :
 # the exported variables need to be availble at this level.
 source loadSettings.sh
 
+# Before we do anything else, set the desired timezone
+# Timezone is one word, but here we use SCREAMING_SNAKE_CASE
+# to not interfere with any other variable
+timedatectl set-timezone ${TIME_ZONE}
+
+# Change the local logging to use the new TZ
+echo "TZ=\"${TIME_ZONE}\"" >>/etc/sysconfig/rsyslog
+ystemctl restart rsyslog.service
+
 # My vimrc. This is optional, nice if you are working in the shell.
 curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
 

@@ -24,4 +24,5 @@ export ORG_UNIT=${ORG_UNIT-"Security Team"}
 export COMMON_NAME=${MX_DOMAIN}
 export ENVIRONMENT=${ENVIRONMENT-"PROD"}        # Set this value to PROD to generate strong passwords for accounts.
 export EMAIL_ACCOUNTS=${EMAIL_ACCOUNTS-"royce"} # Space seperated list of account names to create.
+export TIME_ZONE=${TIME_ZONE-"America/Chicago"}
 #################################################################
