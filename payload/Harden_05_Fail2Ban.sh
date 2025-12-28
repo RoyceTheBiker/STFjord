@@ -12,3 +12,6 @@ dnf -y install fail2ban
 # jail.local = all rules are the same for all services
 # jail.sshd, jail.<sevice> = create different rules for each service
 cp /etc/fail2ban/jail.conf /etc/fail2ban/jail.local
+
+systemctl enable fail2ban.service
+systemctl start fail2ban.service
