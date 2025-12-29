@@ -18,6 +18,12 @@ git clone https://gitlab.com/SiliconTao-Systems/STFjord.git
 cd STFjord
 ```
 
+__Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recomends using an SMTP relay service 
+
+[Why is SMTP blocked](https://docs.digitalocean.com/support/why-is-smtp-blocked/)
+[DO recomends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server
+)
+
 ## Digital Ocean CLI
 
 [Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
@@ -96,6 +102,8 @@ does not work.
 Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address,
 register the IP with our DNS, and return later to run the Terraform project
 to build our email server and set up the encrypted services using signed certificates.
+
+[SPF, DMARC, MX, DKIM](https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/)
 
  [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
 

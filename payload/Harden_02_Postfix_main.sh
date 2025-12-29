@@ -5,15 +5,22 @@ Header "Harden Postfix"
 CreateRollback.sh SEQ /etc/postfix/
 
 # Changes to main.cf
-sed -i /etc/postfix/main.cf -e 's/^smtp_tls_security_level .*/smtp_tls_security_level = encrypt/'
-sed -i /etc/postfix/main.cf -e 's/^smtpd_tls_security_level .*/smtpd_tls_security_level = may/'
-sed -i /etc/postfix/main.cf -e 's/^\(inet_protocols \).*/\1= ipv4/'
-copy the line smtp_tls_CAfile to smtpd_tls_CAfile
+MAINCF=/etc/postfix/main.cf
+sed -i ${MAINCF} -e 's/^smtp_tls_security_level .*/smtp_tls_security_level = encrypt/'
+sed -i ${MAINCF} -e 's/^smtpd_tls_security_level .*/smtpd_tls_security_level = may/'
+sed -i ${MAINCF} -e 's/^\(inet_protocols \).*/\1= ipv4/'
+sed -i ${MAINCF} -e '/#myhostname.*host.domain.tld/{s/^#//;s/=.*/= '${MX_HOST}.${MX_DOMAIN}'/}'
+sed -i ${MAINCF} -e '/#mydomain.*domain.tld/{s/^#//;s/=.*/= '${MX_DOMAIN}'/}'
+
+# copy the line smtp_tls_CAfile to smtpd_tls_CAfile
+sed -i ${MAINCF} -e '/smtp_tls_CAfile/{H;1h;{s/smtp/smtpd/}}'
+# mynetworks_style = host ; could be required to allow local traffic.
 
 # Changes to master.cf
-sed -i /etc/postfix/master.cf -e 's/^\(smtp *inet\)/#\1 /'  # Disable un-encrypted service.
-sed -i /etc/postfix/master.cf -e 's/^#\(smtps *inet\)/\1 /' # Enable encrypted service.
-sed -i /etc/postfix/master.cf -e 's/^#\( *-o smtpd_tls\)/\1/'
+MASTERCF=/etc/postfix/master.cf
+sed -i ${MASTERCF} -e 's/^\(smtp *inet\)/#\1 /'  # Disable un-encrypted service.
+sed -i ${MASTERCF} -e 's/^#\(smtps *inet\)/\1 /' # Enable encrypted service.
+sed -i ${MASTERCF} -e 's/^#\( *-o smtpd_tls\)/\1/'
 
 # From testing, submission cannot use TLS.
 # Email clients, both desktop and mobile apps, will not have certs.
