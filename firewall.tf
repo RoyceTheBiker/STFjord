@@ -3,7 +3,7 @@ data "http" "myip" {
 }
 
 resource "digitalocean_firewall" "email-firewall" {
-  name = "${var.MX_HOST}.${var.MX_DOMAIN}-email-firewall"
+  name = "${var.MX_HOST}.${var.MX_DOMAIN}_email_firewall"
 
   droplet_ids = [digitalocean_droplet.webmail.id]
 
