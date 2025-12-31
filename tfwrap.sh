@@ -41,8 +41,8 @@ terraform {
 }
 
 function tf_init {
-  terraform init
   WriteBackend
+  terraform init
 }
 
 function tf_validate {
