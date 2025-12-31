@@ -70,3 +70,9 @@ variable "STATE" {
   default     = ""
   type        = string
 }
+
+variable "TIME_ZONE" {
+  description = "Timezone of server or orginization"
+  default     = ""
+  type        = string
+}
