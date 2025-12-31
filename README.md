@@ -18,7 +18,7 @@ git clone https://gitlab.com/SiliconTao-Systems/STFjord.git
 cd STFjord
 ```
 
-__Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recomends using an SMTP relay service 
+__Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recomends using an SMTP relay service
 
 [Why is SMTP blocked](https://docs.digitalocean.com/support/why-is-smtp-blocked/)
 [DO recomends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server
@@ -78,7 +78,7 @@ us to set up [CertBot](https://certbot.eff.org/) to automatically renew our cert
 
 For CertBot to work, port 80 must be accessible to the public Internet, and no
 service can be using the port. When CertBot runs, it will start a service on port
-80 and send a request for verification to **Let's Encrypt** to get a new signed
+80 and send a request for verification to __Let's Encrypt__ to get a new signed
 certificate. For this to happen, the IP address must be registered in public
 DNS so that the host is resolvable by name. This is important because IP addresses
 cannot obtain signed certificates. The controller of the hostname (FQDN) in public
@@ -103,7 +103,13 @@ Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address,
 register the IP with our DNS, and return later to run the Terraform project
 to build our email server and set up the encrypted services using signed certificates.
 
-[SPF, DMARC, MX, DKIM](https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/)
+## Access Denied
+
+DigitalOcean blocks outgoing email by default. They recomend using a 3rd party
+relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
+
+Sending email directly from a server inside DigitalOcean would require the block be
+removed for that IP address and may require extra qualification such as [SPF, DMARC, MX, DKIM](https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/)
 
  [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
 
@@ -122,38 +128,46 @@ Common Types of Multi-Factor Authentication
 
 ## Terraforming
 
+### Remote State
+
+This is something I would like to use but is out of scope for now.
+The ''doctl'' does not have the ability to create buckets it seems.
+[Terraform Remote State Backend](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
+[Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
+[Terraform For DO Bucket](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object)
+
 ### The Payload
 
-Everyone who uses this project will need to edit **payload/payload.sh**, or
-completely replace the **payload** directory.
+Everyone who uses this project will need to edit __payload/payload.sh__, or
+completely replace the __payload__ directory.
 
-Replace the entire **payload** to use this project as a template to build
+Replace the entire __payload__ to use this project as a template to build
 a different project in DigitalOcean using Terraform.
 
 #### Payload Variables
 
 ##### MX_DOMAIN
 
-The minimum change required would be to change **MX_DOMAIN** to match your MX
+The minimum change required would be to change __MX_DOMAIN__ to match your MX
 domain registration.
 
 The payload has been configured to install a mail server for
-**mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record
+__mWorks.tech__. This domain belongs to SiliconTao.com, and the MX record
 is controlled by SiliconTao.com DNS. Not changing these values will cause
 your mail server to not work.
 
 ##### ENVIRONMENT
 
 In [Part 3 of the Rocky Linux Webmail](https://www.youtube.com/watch?v=iVKNTxWYQcU)
-videos, user accounts were set up using only **password** as the password.
+videos, user accounts were set up using only __password__ as the password.
 In the payload, a new variable was added for ENVIRONMENT. If ENVIRONMENT is set
-to "PROD", as it is in **payload.sh**, random passwords are generated for the
+to "PROD", as it is in __payload.sh__, random passwords are generated for the
 user accounts. This password is not saved or logged anywhere. The administrator
 must SSH into the mail server in PROD and change the user's password.
-Changing the ENVIRONMENT value to DEV will cause it to use **password**
+Changing the ENVIRONMENT value to DEV will cause it to use __password__
 as the password, and that is not recommended in a production environment.
 
-The major steps in the **payload.sh** are:
+The major steps in the __payload.sh__ are:
 
 - Install and setup CertBot, creating signed certificates and a cron job to
 renew the cert.
@@ -164,7 +178,7 @@ certificates
 
 ## Init
 
-Before running Terraform, the project needs to run **init**. That will
+Before running Terraform, the project needs to run __init__. That will
 read the Terraform source files and download the necessary modules
 to deploy to DigitalOcean.
 
@@ -172,7 +186,7 @@ to deploy to DigitalOcean.
 terraform init
 ```
 
-Copy the **settings.example.json** file to a private directory outside of
+Copy the __settings.example.json__ file to a private directory outside of
 the project, and replace the values in it, your admin token from
 DigitalOcean and the reserved IP that has been assigned to the MX record.
 
@@ -195,7 +209,7 @@ DigitalOcean and the reserved IP that has been assigned to the MX record.
 }
 ```
 
-This **settings.json** file does not contain the settings used in **payload.json**.
+This __settings.json__ file does not contain the settings used in __payload.json__.
 This allows the STFjord project to be used with custom payloads and no
 Terraform code changes.
 
@@ -224,7 +238,7 @@ terraform apply --var-file=${TF_VAR_settings_json}
 
 ## Destroy
 
-For development only, using the **destroy** command completely removes the Droplet,
+For development only, using the __destroy__ command completely removes the Droplet,
 leaving nothing behind from the project.
 Repeatedly building and destroying the project will cause CertBot to fail, and
 each host can only register for a new certificate once every seven days.
@@ -237,7 +251,7 @@ terraform destroy --var-file=${TF_VAR_settings_json}
 ## Test The Webmail Certificate
 
 Replace the mail host and domain names with the names specified in the
-**payload.sh** script.
+__payload.sh__ script.
 
 ```bash
 openssl s_client -connect mail.mWorks.tech:443 2>/dev/null </dev/null | \

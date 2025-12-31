@@ -39,6 +39,6 @@ done
 
 # Generate a security audit report
 dnf -y install lynis
-lynis audit system
+lynis audit system | tee lynis.report.txt
 
 # End of script

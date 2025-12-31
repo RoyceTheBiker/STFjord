@@ -34,10 +34,11 @@ function Wait4RpmLock {
   }
 }
 
+echo "Upload letsencrypt.tbj file if there is one"
 sleep 60
-if [ -f letsencrypt.mWorks.tbj ]; then
+if [ -f letsencrypt.tbj ]; then
   # For development the previously generated certificates are used.
-  tar xfj letsencrypt.mWorks.tbj -C /
+  tar xfj letsencrypt.tbj -C /
   exit 0
 fi
 

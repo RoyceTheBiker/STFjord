@@ -55,7 +55,3 @@ curl https://cdn.silicontao.com/RockyLinuxWebmail/vimrc >~/.vimrc
 # Harden the server.
 # Switch to encrypted ports.
 [ -f HardenWebmail.sh ] && bash ./HardenWebmail.sh
-
-# Just for dev, stand up the server then turn it off
-echo "Halting server for testing"
-halt -p

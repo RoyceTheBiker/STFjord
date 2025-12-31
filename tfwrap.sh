@@ -5,67 +5,105 @@
 # environment for deployment.
 
 # arguments
-#   validate | plan | deploy | destroy
+#   validate | plan | apply | destroy
 #   path/to/settings.json
 
+ARG1=${1}
+ARG2=${2}
+
+function tf_help {
+  echo "This script requires two arguments"
+  echo "The first is an action of validate, plan, apply, or destroy"
+  echo "The second is the path to the settings JSON file for this action"
+  exit 1
+}
+
+function writeRemoteBackend {
+  cat >>backend.tf <<@EOF
+terraform {
+  backend "s3" {
+    bucket     = "terraform"
+    region     = "us-east-1"
+    key        = "fileShare/us-east-1"
+  }
+}
+@EOF
+}
+
+function WriteBackend {
+  cat >backend.tf <<@EOF
+terraform {
+  backend "local" {
+    path  = "${STATE_LOCATION}"
+  }
+}
+@EOF
+}
+
+function tf_init {
+  terraform init
+  WriteBackend
+}
+
+function tf_validate {
+  tf_init
+  terraform validate
+}
+
+function tf_plan {
+  tf_init
+  terraform plan --var-file=${TF_VAR_settings_json}
+}
+
+function tf_apply {
+  tf_init
+  terraform apply --var-file=${TF_VAR_settings_json}
+}
+
+function tf_destroy {
+  tf_init
+  terraform destroy --var-file=${TF_VAR_settings_json}
+}
+
 # Check for two arguments
-[ ${#@} -eq 2 ] || help 
- 
+[ ${#@} -eq 2 ] || tf_help
+
 # First argument is action
 ACTION=
-case "${1}" in
-  "plan")
-  "validate")
-  "deploy")
-  "destroy")
-    ACTION=${1}
+case "${ARG1}" in
+"plan" | "validate" | "apply" | "destroy")
+  ACTION=${ARG1}
   ;;
 *)
-  help
+  tf_help
   ;;
 esac
 
 # Second argument JSON file
 REMOTE_STATE=false
-[ -f ${2} ] || help
+[ -f ${ARG2} ] || help
 
-cat ${2} | jq read the value of remote state
+STATE_LOCATION=
+MX_DOMAIN=$(cat ${ARG2} | jq --raw-output '.MX_DOMAIN')
+REMOTE_STATE=$(cat ${ARG2} | jq 'has("REMOTE_STATE")')
+[ "${REMOTE_STATE}x" == "truex" ] && {
 
-export TF_VAR_settings_json=${2}
-
-function help {
-  echo "This script requires two arguments"
-  echo "The first is an action of validate, plan, deploy, or destroy"
-  echo "The second is the path to the settings JSON file for this action"
-  exit 1
+  echo "read the value of remote state"
+  STATE_LOCATION=$(cat ${ARG2} | jq --raw-output '.REMOTE_STATE')
+} || {
+  # Split local state when not using remote state
+  mkdir -p .states
+  echo "MX_DOMAIN=$MX_DOMAIN"
+  STATE_LOCATION=".states/${MX_DOMAIN}"
 }
 
-function tf_init {
-  echo terraform init
-}
+echo "REMOTE_STATE='$REMOTE_STATE'"
+echo "STATE_LOCATION='$STATE_LOCATION'"
 
-function tf_validate {
-  tf_init
-  echo terraform validate
-}
-
-function tf_plan {
-  tf_init
-  echo terraform plan --var-file=${TF_VAR_settings_json}
-}
-
-function tf_deploy {
-  tf_init
-  echo terraform deploy --var-file=${TF_VAR_settings_json}
-}
-
-function tf_destroy {
-  tf_init
-  echo terraform destroy --var-file=${TF_VAR_settings_json}
-}
+export TF_VAR_settings_json=${ARG2}
 
 # test digital ocean token
-doctl apps list-regions > /dev/null || {
+doctl apps list-regions >/dev/null || {
   echo "doctl could not connect to Digital Ocean"
   echo "Check that your token is current"
   echo "Create a token at https://cloud.digitalocean.com/account/api/tokens"
@@ -75,20 +113,20 @@ doctl apps list-regions > /dev/null || {
   exit 1
 }
 
-
-[ $REMOTE_STATE == true ] && {
+[ "${REMOTE_STATE}x" == "truex" ] && {
   # https://docs.digitalocean.com/products/spaces/how-to/create/
-  echo check digital ocean for state storage, or create it
+  echo "check digital ocean for state storage, or create it"
+  echo "doctl can't create buckets. going to use split local state for now"
+  #doctl spaces keys list 2>/dev/null | grep -q "${STATE_LOCATION}" || {
+  #  echo "Create bucket"
+  #  set -x
+  #  doctl spaces keys create "${STATE_LOCATION}" --grants 'bucket=terraform;permission=fullaccess'
+  #}
 }
 
 case "$ACTION" in
-  "validate") tf_validate ;;
-  "plan") tf_plan ;;
-  "deploy") tf_deploy ;;
-  "destroy") tf_destroy ;;
+"validate") tf_validate ;;
+"plan") tf_plan ;;
+"apply") tf_apply ;;
+"destroy") tf_destroy ;;
 esac
-
-
-
-
-
