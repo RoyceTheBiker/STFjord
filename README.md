@@ -3,7 +3,7 @@
 Silicon Tao Fjord is where the Rocky Linux meets the DigitalOcean.
 
 This project is hosted in a Git repository and utilizes Terraform to
-build a Rocky Linux server on DigitalOcean. The payload script for
+build a Rocky Linux server in the DigitalOcean cloud. The payload script for
 Terraform then sets up a Roundcube Webmail service.
 
 This is part 5 in the Rocky Linux webmail series. Parts 1 to 3 are
@@ -11,7 +11,7 @@ in [Rocky Linux Webmail Server](https://silicontao.com/main/marquis/article/Royc
 Part 4 is
 [ClamAV For Postfix](https://silicontao.com/main/marquis/article/RoyceTheBiker/ClamAV%20for%20Postfix)
 
-Close the Git repository for STFjord
+Clone the Git repository for STFjord
 
 ```bash
 git clone https://gitlab.com/SiliconTao-Systems/STFjord.git
@@ -21,14 +21,24 @@ cd STFjord
 __Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recomends using an SMTP relay service
 
 [Why is SMTP blocked](https://docs.digitalocean.com/support/why-is-smtp-blocked/)
-[DO recomends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server
-)
 
-## Digital Ocean CLI
+[DO recomends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server)
 
-[Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
+## Using STFjord
 
-Using the CLI tool requires an API token for DigitalOcean.
+Using this project to build Rocky Linux in DigitalOcean requires the following.
+
+- DigitalOcean API token
+- Reserved IP address in DigitalOcean
+- DNS registration for the MX records
+- Installed on the deployment system
+  - DigitalOcean API client ''doctl''
+  - Terraform
+  - jQ
+
+### Create Token
+
+Using the CLI tool and Terraform requires an API token for DigitalOcean.
 Use the DigitalOcean control panel to generate a new token on your
 DigitalOcean homepage by selecting the API menu entry located at the bottom left.
 
@@ -36,6 +46,22 @@ Tokens are valid for 90 days.
 To remove an old token, use ``doctl auth remove --context default``
 
 More about [doctl auth](https://docs.digitalocean.com/reference/doctl/reference/auth/)
+
+### Reserved IP
+
+A reserved IP will be needed to create the DNS record that is required 24 hours in advance
+of CertBot creating signed TLS certificates for the email server.
+
+Create the reserved IP in DigitalOcean and add the IP to the ''settings.json'' file
+for the project.
+
+[![Reserved IP]
+ (https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)]
+ (<https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png>)
+
+## Digital Ocean CLI
+
+[Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
 
 Example of using DO API on the command line.
 
@@ -107,11 +133,10 @@ to build our email server and set up the encrypted services using signed certifi
 
 DigitalOcean blocks outgoing email by default. They recomend using a 3rd party
 relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
-
-Sending email directly from a server inside DigitalOcean would require the block be
-removed for that IP address and may require extra qualification such as [SPF, DMARC, MX, DKIM](https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/)
-
- [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
+Sending email directly from a server inside DigitalOcean would require the block
+to be removed for that IP address and may require extra qualification such
+as [SPF, DMARC, MX, DKIM]
+(<https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/>)
 
 <!-- 
 # Plugins For Roundcube
