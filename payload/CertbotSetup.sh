@@ -21,7 +21,7 @@ LAST_SECTION=
 
 source $(dirname $0)/lib.sh
 
-Header "Certbox setup"
+Header "Certbot setup"
 Header "$Release"
 
 # About 10% of the deployments fail because something leaves the lock file behind.
