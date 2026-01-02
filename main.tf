@@ -1,3 +1,7 @@
+provider "digitalocean" {
+  alias = "email-server"
+}
+
 resource "digitalocean_droplet" "webmail" {
   image  = "rockylinux-9-x64"
   name   = format("%s.%s", var.MX_HOST, var.MX_DOMAIN)
