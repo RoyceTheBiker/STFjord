@@ -2,9 +2,11 @@ terraform {
   required_providers {
     digitalocean = {
       source  = "digitalocean/digitalocean"
-      version = "~> 2.0"
+      version = ">= 1.14.3"
     }
+    template = "2.2.0"
   }
+  required_version = ">= 1.14.3"
 }
 
 provider "digitalocean" {
@@ -12,5 +14,6 @@ provider "digitalocean" {
 }
 
 data "digitalocean_ssh_key" "terraform" {
-  name = "id_ecdsa.Royce@SerenityBasin.pub"
+  name = "id_ecdsa.pub"
 }
+
