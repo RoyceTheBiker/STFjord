@@ -18,7 +18,7 @@ git clone https://gitlab.com/SiliconTao-Systems/STFjord.git
 cd STFjord
 ```
 
-__Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recomends using an SMTP relay service
+__Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recommends using an SMTP relay service
 
 [Why is SMTP blocked](https://docs.digitalocean.com/support/why-is-smtp-blocked/)
 
@@ -141,7 +141,7 @@ to build our email server and set up the encrypted services using signed certifi
 DigitalOcean blocks outgoing email by default. They recommend using a 3rd party
 relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
 Sending email directly from a server inside DigitalOcean would require the block
-to be removed for that IP address and may require extra qualification such
+to be removed for that IP address and may require extra qualification, such
 as [SPF, DMARC, MX, DKIM]
 (<https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/>)
 
@@ -163,11 +163,11 @@ Common Types of Multi-Factor Authentication
 ### Remote State vs Local State
 
 Using a Terraform remote state allows for multiple developers to collaborate
-on deployments. Unfortunately the ''doctl'' CLI is not able to create
+on deployments. Unfortunately, the ''doctl'' CLI is not able to create
 Space Buckets at this time. A Bucket to save state in would need to be
 created manually in advance.
 
-For now the project uses split local state where the state files are
+For now, the project uses a split local state where the state files are
 saved locally by the name of the MX_HOST & MX_DOMAIN. This allows a
 single deploy system to manage multiple deployment projects.
 
@@ -209,16 +209,16 @@ as the password, and that is not recommended in a production environment.
 
 The major steps in the __payload.sh__ are:
 
-- Install and setup CertBot, creating signed certificates and a cron job to
+- Install and set up CertBot, creating signed certificates and a cron job to
 renew the cert.
 - Install RoundCube, Postfix, and Dovecot from parts 1, 2, and 3
 - Install ClamAV for Postfix from part 4
-- Harden the services, change to using encrypted ports using the signed
+- Harden the services, change to using encrypted ports, using the signed
 certificates
 
 Copy the __settings.example.json__ file to a private directory outside of
-the project, and replace the values in it, your admin token from
-DigitalOcean and the reserved IP that has been assigned to the MX record.
+the project, and replace the values in it with values for your project,
+admin token from DigitalOcean, the reserved IP, MX_HOST, and MX_DOMAIN.
 
 [Context: "settings.json"]
 
@@ -239,7 +239,7 @@ DigitalOcean and the reserved IP that has been assigned to the MX record.
 }
 ```
 
-This __settings.json__ values override the default values in __loadSettings.sh__.
+These __settings.json__ values override the default values in __loadSettings.sh__.
 This allows STFjord to be customizable without making code changes.
 
 ## Terraform Actions
@@ -256,7 +256,7 @@ The following actions are performed by ''tfwrap.sh''
 
 Each action performs the ''terraform init'' to download necessary modules.
 
-The wrapper script also generates a backend file that is unique the MX_HOST & MX_DOMAIN.
+The wrapper script also generates a backend file that is unique to the MX_HOST & MX_DOMAIN.
 
 mWorks is the test environment used by Silicon Tao.
 The JSON file is kept in the home directory.
@@ -272,7 +272,7 @@ This action checks the syntax of the Terraform scripts.
 
 ## Plan
 
-Plan generates a report of what will be change by an apply.
+Plan generates a report of what will be changed by an apply action.
 
 ```bash
 ./tfwrap.sh plan ${HOME}/settings-mWorks.json; 
@@ -297,7 +297,7 @@ This action cannot be undone.
 
 Repeatedly building and destroying the project will cause CertBot to fail, and
 each host can only register for a new certificate once every seven days.
-To avoid loosing the certificate, a backup of the ''/etc/letsencrypt''
+To avoid losing the certificate, a backup of the ''/etc/letsencrypt''
 should be kept in a safe location.
 
 ```bash
