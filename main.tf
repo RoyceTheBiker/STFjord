@@ -1,6 +1,6 @@
 resource "digitalocean_droplet" "webmail" {
   image  = "rockylinux-9-x64"
-  name   = "email"
+  name   = format("%s.%s", var.MX_HOST, var.MX_DOMAIN)
   region = "tor1"
   size   = "s-2vcpu-4gb"
   ssh_keys = [
@@ -29,6 +29,12 @@ resource "null_resource" "payload" {
     source      = "./payload"
     destination = "/root/payload"
   }
+
+  provisioner "file" {
+    source      = var.settings_json
+    destination = "/root/payload/settings.json"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "export ADMIN_IP='${chomp(data.http.myip.response_body)}'",

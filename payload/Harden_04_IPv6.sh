@@ -1,6 +1,5 @@
 #!/bin/bash
 
-exit 0
 source $(dirname $0)/lib.sh
 Header "Disable IPv6"
 # If IPv6 is needed, skip this part and adjust the firewall to protect the system.

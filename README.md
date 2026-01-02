@@ -2,29 +2,66 @@
 
 Silicon Tao Fjord is where the Rocky Linux meets the DigitalOcean.
 
-This project is hosted in a Git repository and utilizes Terraform to build a Rocky Linux server on DigitalOcean. The payload script for Terraform then sets up a Roundcube Webmail service.
+This project is hosted in a Git repository and utilizes Terraform to
+build a Rocky Linux server in the DigitalOcean cloud. The payload script for
+Terraform then sets up a Roundcube Webmail service.
 
-This is part 5 in the Rocky Linux webmail series. Parts 1 to 3 are in [Rocky Linux Webmail Server](https://silicontao.com/main/marquis/article/RoyceTheBiker/Rocky%20Linux%20Webmail%20Server). Part 4 is
+This is part 5 in the Rocky Linux webmail series. Parts 1 to 3 are
+in [Rocky Linux Webmail Server](https://silicontao.com/main/marquis/article/RoyceTheBiker/Rocky%20Linux%20Webmail%20Server).
+Part 4 is
 [ClamAV For Postfix](https://silicontao.com/main/marquis/article/RoyceTheBiker/ClamAV%20for%20Postfix)
 
-Close the Git repository for STFjord
+Clone the Git repository for STFjord
 
 ```bash
 git clone https://gitlab.com/SiliconTao-Systems/STFjord.git
 cd STFjord
 ```
 
-## Digital Ocean CLI
+__Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new accounts. Digital Ocean recomends using an SMTP relay service
 
-[Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
+[Why is SMTP blocked](https://docs.digitalocean.com/support/why-is-smtp-blocked/)
 
-Using the CLI tool requires an API token for DigitalOcean.
-Use the DigitalOcean control panel to generate a new token on your DigitalOcean homepage by selecting the API menu entry located at the bottom left.
+[DO recomends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server)
+
+## Using STFjord
+
+Using this project to build Rocky Linux in DigitalOcean requires the following.
+
+- DigitalOcean API token
+- Reserved IP address in DigitalOcean
+- DNS registration for the MX records
+- Installed on the deployment system
+  - DigitalOcean API client ''doctl''
+  - Terraform
+  - jQ
+
+### DigitalOcean API Token
+
+Using the CLI tool and Terraform requires an API token for DigitalOcean.
+Use the DigitalOcean control panel to generate a new token on your
+DigitalOcean homepage by selecting the API menu entry located at the bottom left.
 
 Tokens are valid for 90 days.
 To remove an old token, use ``doctl auth remove --context default``
 
 More about [doctl auth](https://docs.digitalocean.com/reference/doctl/reference/auth/)
+
+### Reserved IP Address
+
+A reserved IP will be needed to create the DNS record that is required 24 hours in advance
+of CertBot creating signed TLS certificates for the email server.
+
+Create the reserved IP in DigitalOcean and add the IP to the ''settings.json'' file
+for the project.
+
+[![Reserved IP]
+ (https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)]
+ (<https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png>)
+
+### DigitalOcean API Client
+
+[Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
 
 Example of using DO API on the command line.
 
@@ -36,14 +73,24 @@ doctl compute size list # To get a list of Droplet sizes
 
 [![Testing the token](https://cdn.silicontao.com/RockyLinuxWebmail/doctl_token_sm.png)](https://cdn.silicontao.com/RockyLinuxWebmail/doctl_token.png)
 
+### Terraform
+
+Terraform is the program this project uses to build infrastructure as code.
+
+A DigitalOcean token is required to run Terraform.
+The Terraform API needs to perform actions in the cloud provider API
+as an authorized administrator.
+
+### jQ
+
+The ''jq'' command line program is used by these scripts to read JSON files.
+
 ## Helpful Links
 
 [How To Use Terraform with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean)
-
 [DO Images](https://docs.digitalocean.com/products/droplets/details/images/)
 
 [DO Images API](https://docs.digitalocean.com/reference/api/digitalocean/#tag/GradientAI-Platform/operation/genai_get_workspace)
-
 [DO Regions](https://docs.digitalocean.com/platform/regional-availability/)
 
 [Choosing a Droplet size](https://docs.digitalocean.com/products/droplets/concepts/choosing-a-plan/)
@@ -55,23 +102,48 @@ doctl compute size list # To get a list of Droplet sizes
 
 [DigitalOcean Metrics Agent](https://docs.digitalocean.com/products/monitoring/how-to/install-metrics-agent/)
 
-A token is required to run Terraform. The Terraform API needs to perform actions in the cloud provider API as an authorized administrator.
+## CertBot
 
-# Building
+Setting up a public server requires it to use signed certificates.
+We can use [Let's Encrypt](https://letsencrypt.org/) to create signed certificates
+for free, but the certificates are only valid for 90 days. This requires
+us to set up [CertBot](https://certbot.eff.org/) to automatically renew our certificates.
 
-Setting up a public server requires it to use signed certificates. We can use [Let's Encrypt](https://letsencrypt.org/) to create signed certificates for free, but the certificates are only valid for 90 days. This requires us to set up [CertBot](https://certbot.eff.org/) to automatically renew our certificates.
+For CertBot to work, port 80 must be accessible to the public Internet, and no
+service can be using the port. When CertBot runs, it will start a service on port
+80 and send a request for verification to __Let's Encrypt__ to get a new signed
+certificate. For this to happen, the IP address must be registered in public
+DNS so that the host is resolvable by name. This is important because IP addresses
+cannot obtain signed certificates. The controller of the hostname (FQDN) in public
+DNS records is considered the authority for the FQDN (Fully Qualified Domain Name).
 
-For CertBot to work, port 80 must be accessible to the public Internet, and no service can be using the port. When CertBot runs, it will start a service on port 80 and send a request for verification to **Let's Encrypt** to get a new signed certificate. For this to happen, the IP address must be registered in public DNS so that the host is resolvable by name. This is important because IP addresses cannot obtain signed certificates. The controller of the hostname (FQDN) in public DNS records is considered the authority for the FQDN (Fully Qualified Domain Name).
+When building a server manually, one can start the server, then register the IP
+address with the DNS chosen to control the FQDN. Once the public DNS can
+resolve the hostname, an administrator can return later to set up CertBot,
+generate certificates, and configure the server to use encrypted ports. This
+cannot be done when using Terraform to deploy the server.
 
-When building a server manually, one can start the server, then register the IP address with the DNS chosen to control the FQDN. Once the public DNS can resolve the hostname, an administrator can return later to set up CertBot, generate certificates, and configure the server to use encrypted ports. This cannot be done when using Terraform to deploy the server.
+For Terraform to deploy the server and have it use CertBot for creating signed
+certificates, one of two things must be true. Terraform configures the DNS
+records hosted by the cloud provider, and services remain in an off state until
+CertBot can resolve the hostname on the public DNS, or the IP address must be
+reserved in advance, and a DNS record to resolve the hostname is registered.
 
-For Terraform to deploy the server and have it use CertBot for creating signed certificates, one of two things must be true. Terraform configures the DNS records hosted by the cloud provider, and services remain in an off state until CertBot can resolve the hostname on the public DNS, or the IP address must be reserved in advance, and a DNS record to resolve the hostname is registered.
+Silicon Tao uses the DNS provided by the domain registrar, so the first option
+does not work.
 
-Silicon Tao uses the DNS provided by the domain registrar, so the first option does not work.
+Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address,
+register the IP with our DNS, and return later to run the Terraform project
+to build our email server and set up the encrypted services using signed certificates.
 
-Using DigitalOcean IP reservation, we can stake a claim to an IPv4 address, register the IP with our DNS, and return later to run the Terraform project to build our email server and set up the encrypted services using signed certificates.
+## Access Denied
 
- [![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
+DigitalOcean blocks outgoing email by default. They recommend using a 3rd party
+relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
+Sending email directly from a server inside DigitalOcean would require the block
+to be removed for that IP address and may require extra qualification such
+as [SPF, DMARC, MX, DKIM]
+(<https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/>)
 
 <!-- 
 # Plugins For Roundcube
@@ -86,90 +158,165 @@ Common Types of Multi-Factor Authentication
 
 -->
 
-# Terraforming
+## Terraforming
 
-## The Payload
+### Remote State vs Local State
 
-Everyone who uses this project will need to edit **payload/payload.sh**, or completely replace the **payload** directory.
+Using a Terraform remote state allows for multiple developers to collaborate
+on deployments. Unfortunately the ''doctl'' CLI is not able to create
+Space Buckets at this time. A Bucket to save state in would need to be
+created manually in advance.
 
-Replace the entire **payload** to use this project as a template to build a different project in DigitalOcean using Terraform.
+For now the project uses split local state where the state files are
+saved locally by the name of the MX_HOST & MX_DOMAIN. This allows a
+single deploy system to manage multiple deployment projects.
 
-### Payload Variables
+[Terraform Remote State Backend](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
+[Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
 
-#### MX_DOMAIN
+[Terraform For DO Bucket](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object)
 
-The minimum change required would be to change **MX_DOMAIN** to match your MX domain registration.
+### The Payload
 
-The payload has been configured to install a mail server for **mWorks.tech**. This domain belongs to SiliconTao.com, and the MX record is controlled by SiliconTao.com DNS. Not changing these values will cause your mail server to not work.
+Everyone who uses this project will need to edit __payload/payload.sh__, or
+completely replace the __payload__ directory.
 
-#### ENVIRONMENT
+Replace the entire __payload__ to use this project as a template to build
+a different project in DigitalOcean using Terraform.
 
-In [Part 3 of the Rocky Linux Webmail](https://www.youtube.com/watch?v=iVKNTxWYQcU) videos, user accounts were set up using only **password** as the password.
-In the payload, a new variable was added for ENVIRONMENT. If ENVIRONMENT is set to "PROD", as it is in **payload.sh**, random passwords are generated for the user accounts. This password is not saved or logged anywhere. The administrator must SSH into the mail server in PROD and change the user's password. Changing the ENVIRONMENT value to DEV will cause it to use **password** as the password, and that is not recommended in a production environment.
+#### Payload Variables
 
-The major steps in the **payload.sh** are:
+##### MX_DOMAIN
 
-- Install and setup CertBot, creating signed certificates and a cron job to renew the cert.
+The minimum change required would be to change __MX_DOMAIN__ to match your MX
+domain registration.
+
+The payload has been configured to install a mail server for
+__mWorks.tech__. This domain belongs to SiliconTao.com, and the MX record
+is controlled by SiliconTao.com DNS. Not changing these values will cause
+your mail server to not work.
+
+##### ENVIRONMENT
+
+In [Part 3 of the Rocky Linux Webmail](https://www.youtube.com/watch?v=iVKNTxWYQcU)
+videos, user accounts were set up using only __password__ as the password.
+In the payload, a new variable was added for ENVIRONMENT. If ENVIRONMENT is set
+to "PROD", as it is in __payload.sh__, random passwords are generated for the
+user accounts. This password is not saved or logged anywhere. The administrator
+must SSH into the mail server in PROD and change the user's password.
+Changing the ENVIRONMENT value to DEV will cause it to use __password__
+as the password, and that is not recommended in a production environment.
+
+The major steps in the __payload.sh__ are:
+
+- Install and setup CertBot, creating signed certificates and a cron job to
+renew the cert.
 - Install RoundCube, Postfix, and Dovecot from parts 1, 2, and 3
 - Install ClamAV for Postfix from part 4
-- Harden the services, change to using encrypted ports using the signed certificates
+- Harden the services, change to using encrypted ports using the signed
+certificates
 
-## Init
-
-Before running Terraform, the project needs to run **init**. That will read the Terraform source files and download the necessary modules to deploy to DigitalOcean.
-
-```bash
-terraform init
-```
-
-Copy the **settings.example.json** file to a private directory outside of the project, renaming it **settings.json**, and replace the two values in it, your admin token from DigitalOcean and the reserved IP that has been assigned to the MX record.
+Copy the __settings.example.json__ file to a private directory outside of
+the project, and replace the values in it, your admin token from
+DigitalOcean and the reserved IP that has been assigned to the MX record.
 
 [Context: "settings.json"]
 
 ```json
 {
-        "do_token": "dop_v1_abcdefghijklmnop1234567890",
-        "reserved_ip": "1.2.3.4"
+  "do_token": "dop_v1_abcdefghijklmnop1234567890",
+  "reserved_ip": "1.2.3.4",
+  "MX_HOST": "mail",
+  "MX_DOMAIN": "example.com",
+  "COUNTRY": "US",
+  "STATE": "Texas",
+  "LOCATION": "Dallas",
+  "ORGANIZATION": "Happy Tech",
+  "ORG_UNIT": "Computer Team",
+  "COMMON_NAME": "Example.com",
+  "ENVIRONMENT": "PROD",
+  "EMAIL_ACCOUNTS": "royce"
 }
 ```
 
-This **settings.json** file does not contain the settings used in **payload.json**. This allows the STFjord project to be used with custom payloads and no Terraform code changes.
+This __settings.json__ values override the default values in __loadSettings.sh__.
+This allows STFjord to be customizable without making code changes.
+
+## Terraform Actions
+
+The first argument to ''tfwrap.sh'' script is the action to take.
+The second argument is the settings.json file for the environment.
+
+The following actions are performed by ''tfwrap.sh''
+
+- verify
+- plan
+- apply
+- destroy
+
+Each action performs the ''terraform init'' to download necessary modules.
+
+The wrapper script also generates a backend file that is unique the MX_HOST & MX_DOMAIN.
+
+mWorks is the test environment used by Silicon Tao.
+The JSON file is kept in the home directory.
+This is not a recommended location to keep JSON files.
+
+### Verify
+
+This action checks the syntax of the Terraform scripts.
+
+```bash
+./tfwrap.sh verify ${HOME}/settings-mWorks.json
+```
 
 ## Plan
 
+Plan generates a report of what will be change by an apply.
+
 ```bash
-terraform plan --var-file=~/settings.json
+./tfwrap.sh plan ${HOME}/settings-mWorks.json; 
 
 ```
 
 ## Apply
 
-This is the command that will begin building the Droplet and run the scripts to install Roundcube Webmail.
+This is the command that will begin building the Droplet and run the scripts
+to install Roundcube Webmail.
 
 ```bash
-terraform apply --var-file=~/settings.json
+./tfwrap.sh apply ${HOME}/settings-mWorks.json; 
 ```
 
 ## Destroy
 
-For development only, using the **destroy** command completely removes the Droplet, leaving nothing behind from the project.
-Repeatedly building and destroying the project will cause CertBot to fail, and each host can only register for a new certificate once every seven days.
+If the droplet is no longer needed or major changes require starting over,
+the destroy action will completely delete the droplet.
+
+This action cannot be undone.
+
+Repeatedly building and destroying the project will cause CertBot to fail, and
+each host can only register for a new certificate once every seven days.
+To avoid loosing the certificate, a backup of the ''/etc/letsencrypt''
+should be kept in a safe location.
 
 ```bash
-terraform destroy 
+./tfwrap.sh destroy ${HOME}/settings-mWorks.json; 
 ```
 
-# Test The Webmail Certificate
+## Test The Webmail Certificate
 
-Replace the mail host and domain names with the names specified in the **payload.sh** script.
+Replace the mail host and domain names with the names specified in the
+__settings.json__ script.
 
 ```bash
 openssl s_client -connect mail.mWorks.tech:443 2>/dev/null </dev/null | \
-  sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p'
+  openssl x509 -text -noout | head -n 25  
 ```
 
-# Check The Certificate Expiry Date
+## Check The Certificate Expiry Date
 
 ```bash
-openssl x509 -in /etc/letsencrypt/archive/mail.mworks.tech/fullchain1.pem -enddate -noout
+FULL_CHAIN=/etc/letsencrypt/archive/mail.mworks.tech/fullchain1.pem 
+openssl x509 -in $FULL_CHAIN -enddate -noout
 ```

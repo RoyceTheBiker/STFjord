@@ -1,4 +1,15 @@
 {
-	"do_token": "dop_v1_abcdefghijklmnop1234567890",
-	"reserved_ip": "1.2.3.4"
+  "do_token": "dop_v1_abcdefghijklmnop1234567890",
+  "reserved_ip": "1.2.3.4",
+  "MX_HOST": "mail",
+  "MX_DOMAIN": "example.com",
+  "COUNTRY": "US",
+  "STATE": "Texas",
+  "LOCATION": "Dallas",
+  "ORGANIZATION": "Happy Tech",
+  "ORG_UNIT": "Computer Team",
+  "COMMON_NAME": "Example.com",
+  "ENVIRONMENT": "PROD",
+  "EMAIL_ACCOUNTS": "royce",
+  "TIME_ZONE": "America/Chicago"
 }

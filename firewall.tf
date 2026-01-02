@@ -3,7 +3,7 @@ data "http" "myip" {
 }
 
 resource "digitalocean_firewall" "email-firewall" {
-  name = "email-firewall"
+  name = replace("${var.MX_HOST}-${var.MX_DOMAIN}-email-firewall", ".", "-")
 
   droplet_ids = [digitalocean_droplet.webmail.id]
 
@@ -25,6 +25,13 @@ resource "digitalocean_firewall" "email-firewall" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "443"
+    source_addresses = ["0.0.0.0/0"]
+  }
+
+  # Encrypted SMTPS
+  inbound_rule {
+    protocol         = "tcp"
+    port_range       = "465"
     source_addresses = ["0.0.0.0/0"]
   }
 

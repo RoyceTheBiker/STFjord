@@ -4,6 +4,7 @@ Release="Sat  4 Oct 2025 11:45:22 MDT"
 
 #################################################################
 # Change these values for your mail server
+# These values are passed in from RockyLinuxWebmail.sh
 MX_HOST=${MX_HOST-"mail"}
 MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
 #################################################################
@@ -20,7 +21,7 @@ LAST_SECTION=
 
 source $(dirname $0)/lib.sh
 
-Header "Certbox setup"
+Header "Certbot setup"
 Header "$Release"
 
 # About 10% of the deployments fail because something leaves the lock file behind.
@@ -33,9 +34,11 @@ function Wait4RpmLock {
   }
 }
 
-if [ -f letsencrypt.mWorks.tbj ]; then
+echo "Upload letsencrypt.tbj file if there is one"
+sleep 60
+if [ -f letsencrypt.tbj ]; then
   # For development the previously generated certificates are used.
-  tar xfj letsencrypt.mWorks.tbj -C /
+  tar xfj letsencrypt.tbj -C /
   exit 0
 fi
 
