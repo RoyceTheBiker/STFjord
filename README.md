@@ -36,7 +36,7 @@ Using this project to build Rocky Linux in DigitalOcean requires the following.
   - Terraform
   - jQ
 
-### Create Token
+### DigitalOcean API Token
 
 Using the CLI tool and Terraform requires an API token for DigitalOcean.
 Use the DigitalOcean control panel to generate a new token on your
@@ -47,7 +47,7 @@ To remove an old token, use ``doctl auth remove --context default``
 
 More about [doctl auth](https://docs.digitalocean.com/reference/doctl/reference/auth/)
 
-### Reserved IP
+### Reserved IP Address
 
 A reserved IP will be needed to create the DNS record that is required 24 hours in advance
 of CertBot creating signed TLS certificates for the email server.
@@ -59,7 +59,7 @@ for the project.
  (https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)]
  (<https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png>)
 
-## Digital Ocean CLI
+### DigitalOcean API Client
 
 [Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
 
@@ -73,14 +73,24 @@ doctl compute size list # To get a list of Droplet sizes
 
 [![Testing the token](https://cdn.silicontao.com/RockyLinuxWebmail/doctl_token_sm.png)](https://cdn.silicontao.com/RockyLinuxWebmail/doctl_token.png)
 
+### Terraform
+
+Terraform is the program this project uses to build infrastructure as code.
+
+A DigitalOcean token is required to run Terraform.
+The Terraform API needs to perform actions in the cloud provider API
+as an authorized administrator.
+
+### jQ
+
+The ''jq'' command line program is used by these scripts to read JSON files.
+
 ## Helpful Links
 
 [How To Use Terraform with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean)
-
 [DO Images](https://docs.digitalocean.com/products/droplets/details/images/)
 
 [DO Images API](https://docs.digitalocean.com/reference/api/digitalocean/#tag/GradientAI-Platform/operation/genai_get_workspace)
-
 [DO Regions](https://docs.digitalocean.com/platform/regional-availability/)
 
 [Choosing a Droplet size](https://docs.digitalocean.com/products/droplets/concepts/choosing-a-plan/)
@@ -92,10 +102,7 @@ doctl compute size list # To get a list of Droplet sizes
 
 [DigitalOcean Metrics Agent](https://docs.digitalocean.com/products/monitoring/how-to/install-metrics-agent/)
 
-A token is required to run Terraform. The Terraform API needs to perform
-actions in the cloud provider API as an authorized administrator.
-
-## Building
+## CertBot
 
 Setting up a public server requires it to use signed certificates.
 We can use [Let's Encrypt](https://letsencrypt.org/) to create signed certificates
@@ -131,7 +138,7 @@ to build our email server and set up the encrypted services using signed certifi
 
 ## Access Denied
 
-DigitalOcean blocks outgoing email by default. They recomend using a 3rd party
+DigitalOcean blocks outgoing email by default. They recommend using a 3rd party
 relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
 Sending email directly from a server inside DigitalOcean would require the block
 to be removed for that IP address and may require extra qualification such
@@ -153,12 +160,20 @@ Common Types of Multi-Factor Authentication
 
 ## Terraforming
 
-### Remote State
+### Remote State vs Local State
 
-This is something I would like to use but is out of scope for now.
-The ''doctl'' does not have the ability to create buckets it seems.
+Using a Terraform remote state allows for multiple developers to collaborate
+on deployments. Unfortunately the ''doctl'' CLI is not able to create
+Space Buckets at this time. A Bucket to save state in would need to be
+created manually in advance.
+
+For now the project uses split local state where the state files are
+saved locally by the name of the MX_HOST & MX_DOMAIN. This allows a
+single deploy system to manage multiple deployment projects.
+
 [Terraform Remote State Backend](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
 [Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
+
 [Terraform For DO Bucket](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object)
 
 ### The Payload
@@ -201,16 +216,6 @@ renew the cert.
 - Harden the services, change to using encrypted ports using the signed
 certificates
 
-## Init
-
-Before running Terraform, the project needs to run __init__. That will
-read the Terraform source files and download the necessary modules
-to deploy to DigitalOcean.
-
-```bash
-terraform init
-```
-
 Copy the __settings.example.json__ file to a private directory outside of
 the project, and replace the values in it, your admin token from
 DigitalOcean and the reserved IP that has been assigned to the MX record.
@@ -234,20 +239,43 @@ DigitalOcean and the reserved IP that has been assigned to the MX record.
 }
 ```
 
-This __settings.json__ file does not contain the settings used in __payload.json__.
-This allows the STFjord project to be used with custom payloads and no
-Terraform code changes.
+This __settings.json__ values override the default values in __loadSettings.sh__.
+This allows STFjord to be customizable without making code changes.
+
+## Terraform Actions
+
+The first argument to ''tfwrap.sh'' script is the action to take.
+The second argument is the settings.json file for the environment.
+
+The following actions are performed by ''tfwrap.sh''
+
+- verify
+- plan
+- apply
+- destroy
+
+Each action performs the ''terraform init'' to download necessary modules.
+
+The wrapper script also generates a backend file that is unique the MX_HOST & MX_DOMAIN.
+
+mWorks is the test environment used by Silicon Tao.
+The JSON file is kept in the home directory.
+This is not a recommended location to keep JSON files.
+
+### Verify
+
+This action checks the syntax of the Terraform scripts.
+
+```bash
+./tfwrap.sh verify ${HOME}/settings-mWorks.json
+```
 
 ## Plan
 
-The variable ''TF_VAR_settings_json'' sets the file name of the settings
-JSON that contains the configuration values.
-It is exported as a variable so that Terraform can upload
-the settings file to the target server and supply values to the payload.
+Plan generates a report of what will be change by an apply.
 
 ```bash
-export TF_VAR_settings_json=${HOME}/settings-mWorks.json; 
-terraform plan --var-file=${TF_VAR_settings_json}
+./tfwrap.sh plan ${HOME}/settings-mWorks.json; 
 
 ```
 
@@ -257,26 +285,29 @@ This is the command that will begin building the Droplet and run the scripts
 to install Roundcube Webmail.
 
 ```bash
-export TF_VAR_settings_json=${HOME}/settings-mWorks.json; 
-terraform apply --var-file=${TF_VAR_settings_json}
+./tfwrap.sh apply ${HOME}/settings-mWorks.json; 
 ```
 
 ## Destroy
 
-For development only, using the __destroy__ command completely removes the Droplet,
-leaving nothing behind from the project.
+If the droplet is no longer needed or major changes require starting over,
+the destroy action will completely delete the droplet.
+
+This action cannot be undone.
+
 Repeatedly building and destroying the project will cause CertBot to fail, and
 each host can only register for a new certificate once every seven days.
+To avoid loosing the certificate, a backup of the ''/etc/letsencrypt''
+should be kept in a safe location.
 
 ```bash
-export TF_VAR_settings_json=${HOME}/settings-mWorks.json; 
-terraform destroy --var-file=${TF_VAR_settings_json}
+./tfwrap.sh destroy ${HOME}/settings-mWorks.json; 
 ```
 
 ## Test The Webmail Certificate
 
 Replace the mail host and domain names with the names specified in the
-__payload.sh__ script.
+__settings.json__ script.
 
 ```bash
 openssl s_client -connect mail.mWorks.tech:443 2>/dev/null </dev/null | \
