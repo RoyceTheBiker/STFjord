@@ -22,12 +22,14 @@ __Note:__ Note: As of June 22, 2022, DigitalOcean is blocking SMTP for all new a
 
 [Why is SMTP blocked](https://docs.digitalocean.com/support/why-is-smtp-blocked/)
 
-[DO recomends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server)
+[DO recommends third-party relay](https://www.digitalocean.com/community/tutorials/why-you-may-not-want-to-run-your-own-mail-server)
 
 ## Using STFjord
 
 Using this project to build Rocky Linux in DigitalOcean requires the following.
 
+- Running SSH Agent with unlocked private key
+- Public key in DigitalOcean
 - DigitalOcean API token
 - Reserved IP address in DigitalOcean
 - DNS registration for the MX records
@@ -35,6 +37,13 @@ Using this project to build Rocky Linux in DigitalOcean requires the following.
   - DigitalOcean API client ''doctl''
   - Terraform
   - jQ
+
+### SSH Agent And Keys
+
+Building Linux systems remotely requires SSH access. When a Droplet is created, DigitalOcean
+will copy the public key into the root account to allow SSH access. Terraform will connect
+to the Droplet via SSH, so it will require that the SSH Agent is running and has
+the matching private key unlocked.
 
 ### DigitalOcean API Token
 
@@ -117,7 +126,7 @@ us to set up [CertBot](https://certbot.eff.org/) to automatically renew our cert
 For CertBot to work, port 80 must be accessible to the public Internet, and no
 service can be using the port. When CertBot runs, it will start a service on port
 80 and send a request for verification to __Let's Encrypt__ to get a new signed
-certificate. For this to happen, the IP address must be registered in public
+certificate. For this to happen, the IP address must be registered in a public
 DNS so that the host is resolvable by name. This is important because IP addresses
 cannot obtain signed certificates. The controller of the hostname (FQDN) in public
 DNS records is considered the authority for the FQDN (Fully Qualified Domain Name).
@@ -145,7 +154,7 @@ to build our email server and set up the encrypted services using signed certifi
 
 DigitalOcean blocks outgoing email by default. They recommend using a 3rd party
 relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
-Sending email directly from a server inside DigitalOcean would require the block
+Sending emails directly from a server inside DigitalOcean would require the block
 to be removed for that IP address and may require extra qualification, such
 as [SPF, DMARC, MX, DKIM]
 (<https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/>)
