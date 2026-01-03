@@ -48,7 +48,13 @@ function readSshKey {
   export TF_VAR_SSH_KEY="${PRV_KEY}"
 }
 
+function debugLogging {
+  export TF_LOG_PATH=debug.log
+  export TF_LOG=DEBUG
+}
+
 function tf_init {
+  debugLogging
   readSshKey
   WriteBackend
   terraform init
