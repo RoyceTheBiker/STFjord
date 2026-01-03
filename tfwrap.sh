@@ -45,7 +45,7 @@ function readSshKey {
     echo "Please start the SSH agent and add a private key."
     exit 2
   }
-  export TF_VAR_SSH_KEY=${PRV_KEY}
+  export TF_VAR_SSH_KEY="${PRV_KEY}.pub"
 }
 
 function tf_init {

@@ -20,9 +20,9 @@ export MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
 RLWM_HL=${HOME}/RLWM_Harden_steps
 mkdir -pv ${RLWM_HL}
 
-source $(dirname $0)/lib.sh
+source "$(dirname $0)/lib.sh"
 
-LAST_SECTION=
+export LAST_SECTION=
 Header "Harden Rocky Linux Webmail"
 Header "$Release"
 

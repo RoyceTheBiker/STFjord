@@ -3,7 +3,7 @@
 # Fail2Ban for Rocky Linux 9 on Digital Ocean.
 # https://www.digitalocean.com/community/tutorials/how-to-protect-ssh-with-fail2ban-on-rocky-linux-9
 
-source $(dirname $0)/lib.sh
+source "$(dirname $0)/lib.sh"
 Header "Fail2Ban Intrusion Prevention"
 
 dnf -y install fail2ban

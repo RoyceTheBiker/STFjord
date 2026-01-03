@@ -4,8 +4,6 @@ CHGNUMBER=$1
 shift
 DIFF_CHG=$1
 
-VALID_CR=0
-
 function ShowHelp {
   echo "CreateRollback.sh is a utility script to archive Linux files before changing them.
 
