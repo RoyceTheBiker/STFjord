@@ -8,7 +8,7 @@ resource "digitalocean_droplet" "webmail" {
   region = "tor1"
   size   = "s-2vcpu-4gb"
   ssh_keys = [
-    data.digitalocean_ssh_key.terraform.id
+    var.SSH_KEY
   ]
   monitoring = true # Enable the Digital Ocean metrics agent
   ipv6       = false

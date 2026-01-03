@@ -29,7 +29,7 @@ This has a failure of not being able to mount the CI_PROJECT_DIR
 path as a Docker volume to the ''/tmp/lint'' mount point as
 needed by super-linter.
 
-# ENV Dump
+## ENV Dump
 
 The ''env'' command was able to show useful variables when the basic was tested.
 

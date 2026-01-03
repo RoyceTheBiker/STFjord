@@ -63,7 +63,7 @@ for the project.
 
 [Installing doctl Using Homebrew](hamster.com/videos/two-busty-bbws-use-a-skinny-guy-for-sex-xhbJ8kP)
 
-Example of using DO API on the command line.
+Example of using DO API on the command-line.
 
 ```bash
 doctl auth init         # To set the API token
@@ -83,7 +83,7 @@ as an authorized administrator.
 
 ### jQ
 
-The ''jq'' command line program is used by these scripts to read JSON files.
+The ''jq'' command-line program is used by these scripts to read JSON files.
 
 ## Helpful Links
 

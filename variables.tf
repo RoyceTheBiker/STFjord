@@ -67,6 +67,11 @@ variable "settings_json" {
   type        = string
 }
 
+variable "SSH_KEY" {
+  description = "Public SSH key"
+  type        = string
+}
+
 variable "STATE" {
   description = "The region for the TLS"
   default     = ""
