@@ -88,19 +88,23 @@ The ''jq'' command-line program is used by these scripts to read JSON files.
 ## Helpful Links
 
 [How To Use Terraform with DigitalOcean](https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean)
+
 [DO Images](https://docs.digitalocean.com/products/droplets/details/images/)
 
 [DO Images API](https://docs.digitalocean.com/reference/api/digitalocean/#tag/GradientAI-Platform/operation/genai_get_workspace)
+
 [DO Regions](https://docs.digitalocean.com/platform/regional-availability/)
 
 [Choosing a Droplet size](https://docs.digitalocean.com/products/droplets/concepts/choosing-a-plan/)
 
 [Droplet CPU and RAM sizes](https://www.digitalocean.com/community/questions/how-to-identify-the-same-sizes-as-are-available-through-the-web-interface)
+
 [Create a personal access token](https://docs.digitalocean.com/reference/api/create-personal-access-token/)
 
 [Remote State](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
 
 [DigitalOcean Metrics Agent](https://docs.digitalocean.com/products/monitoring/how-to/install-metrics-agent/)
+
 [DigitalOcean Terraform Provider Reference](https://docs.digitalocean.com/reference/terraform/reference/)
 
 ## CertBot
