@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname $0)/lib.sh
+source "$(dirname $0)/lib.sh"
 Header "Harden PHP-FPM"
 
 CreateRollback.sh SEQ /etc/php.ini

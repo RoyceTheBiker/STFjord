@@ -40,7 +40,16 @@ terraform {
 @EOF
 }
 
+function readSshKey {
+  PRV_KEY=$(doctl compute ssh-key list --output json | jq --raw-output '.[]|.name') || {
+    echo "Please start the SSH agent and add a private key."
+    exit 2
+  }
+  export TF_VAR_SSH_KEY="${PRV_KEY}"
+}
+
 function tf_init {
+  readSshKey
   WriteBackend
   terraform init
 }

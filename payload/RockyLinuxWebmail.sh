@@ -30,8 +30,8 @@ echo "::1 $(hostname -s) $(hostname -f)" >>/etc/hosts
   exit 6
 }
 
-LAST_SECTION=
-source $(dirname $0)/lib.sh
+export LAST_SECTION=
+source "$(dirname $0)/lib.sh"
 Header "Rocky Linux Webmail setup"
 Header $Release
 

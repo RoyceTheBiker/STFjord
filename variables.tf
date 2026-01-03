@@ -35,11 +35,13 @@ variable "LOCATION" {
 
 variable "MX_HOST" {
   description = "The hostname of the email server"
+  default     = "email_host"
   type        = string
 }
 
 variable "MX_DOMAIN" {
   description = "The domain name of the email server"
+  default     = "email.domain"
   type        = string
 }
 
@@ -62,6 +64,11 @@ variable "reserved_ip" {
 
 variable "settings_json" {
   description = "The settings.json file to upload"
+  type        = string
+}
+
+variable "SSH_KEY" {
+  description = "Public SSH key"
   type        = string
 }
 

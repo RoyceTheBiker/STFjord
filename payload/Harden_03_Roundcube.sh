@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source $(dirname $0)/lib.sh
+source "$(dirname $0)/lib.sh"
 Header "Harden Roundcube"
 
 RQ_CONF=/var/www/roundcubemail-1.6.11/config/config.inc.php
