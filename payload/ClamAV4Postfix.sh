@@ -17,8 +17,8 @@ MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
   exit 6
 }
 
-LAST_SECTION=
-source $(dirname $0)/lib.sh
+export LAST_SECTION=
+source "$(dirname $0)/lib.sh"
 
 Header "Rocky Linux Webmail setup"
 Header "$Release"

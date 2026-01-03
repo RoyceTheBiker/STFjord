@@ -1,6 +1,7 @@
 #!/bin/bash
 
-source $(dirname $0)/lib.sh
+source "$(dirname $0)/lib.sh"
+
 Header "Harden Link certificates"
 
 EPT="/etc/pki/tls"

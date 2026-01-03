@@ -17,9 +17,9 @@ MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
   exit 6
 }
 
-LAST_SECTION=
+export LAST_SECTION=
 
-source $(dirname $0)/lib.sh
+source "$(dirname $0)/lib.sh"
 
 Header "Certbot setup"
 Header "$Release"
@@ -27,7 +27,7 @@ Header "$Release"
 # About 10% of the deployments fail because something leaves the lock file behind.
 function Wait4RpmLock {
   [[ -f /var/lib/rpm/.rpm.lock ]] && {
-    ps -ef | grep -iE "rpm|dnf"
+    pgrep -f "rpm|dnf" --list-full
     ls -lha /var/lib/rpm/
     sleep 20
     rm -vf /var/lib/rpm/.rpm.lock || :

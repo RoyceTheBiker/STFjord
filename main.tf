@@ -1,10 +1,14 @@
+provider "digitalocean" {
+  alias = "email-server"
+}
+
 resource "digitalocean_droplet" "webmail" {
   image  = "rockylinux-9-x64"
   name   = format("%s.%s", var.MX_HOST, var.MX_DOMAIN)
   region = "tor1"
   size   = "s-2vcpu-4gb"
   ssh_keys = [
-    data.digitalocean_ssh_key.terraform.id
+    var.SSH_KEY
   ]
   monitoring = true # Enable the Digital Ocean metrics agent
   ipv6       = false

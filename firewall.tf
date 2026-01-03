@@ -1,3 +1,7 @@
+provider "digitalocean" {
+  alias = "firewall"
+}
+
 data "http" "myip" {
   url = "http://ipv4.icanhazip.com"
 }
