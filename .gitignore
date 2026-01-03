@@ -4,3 +4,4 @@ settings.json
 lynsis-report.txt
 .states
 backend.tf
+debug.log
