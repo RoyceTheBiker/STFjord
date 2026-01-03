@@ -101,6 +101,7 @@ The ''jq'' command-line program is used by these scripts to read JSON files.
 [Remote State](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
 
 [DigitalOcean Metrics Agent](https://docs.digitalocean.com/products/monitoring/how-to/install-metrics-agent/)
+[DigitalOcean Terraform Provider Reference](https://docs.digitalocean.com/reference/terraform/reference/)
 
 ## CertBot
 
