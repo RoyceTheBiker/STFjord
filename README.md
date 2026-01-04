@@ -254,10 +254,10 @@ This allows STFjord to be customizable without making code changes.
 
 ## Terraform Actions
 
-The first argument to ''tfwrap.sh'' script is the action to take.
+The first argument to <mark>tfwrap.sh</mark> script is the action to take.
 The second argument is the settings.json file for the environment.
 
-The following actions are performed by ''tfwrap.sh''
+The following actions are performed by <mark>tfwrap.sh</mark>
 
 - verify
 - plan
