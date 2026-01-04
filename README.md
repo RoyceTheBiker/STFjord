@@ -64,9 +64,7 @@ of CertBot creating signed TLS certificates for the email server.
 Create the reserved IP in DigitalOcean and add the IP to the ''settings.json'' file
 for the project.
 
-[![Reserved IP]
- (https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)]
- (<https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png>)
+[![Reserved IP](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address_SM.png)](https://cdn.silicontao.com/RockyLinuxWebmail/DO_reserved_IP_address.png)
 
 ### DigitalOcean API Client
 
@@ -156,8 +154,7 @@ DigitalOcean blocks outgoing email by default. They recommend using a 3rd party
 relay to send outgoing email. [Blocked](https://www.digitalocean.com/community/questions/can-i-utilize-ports-25-465-and-587-i-want-to-setup-postfix-email-server-on-ubuntu)
 Sending emails directly from a server inside DigitalOcean would require the block
 to be removed for that IP address and may require extra qualification, such
-as [SPF, DMARC, MX, DKIM]
-(<https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/>)
+as [SPF, DMARC, MX, DKIM](https://www.cloudflare.com/en-ca/learning/email-security/dmarc-dkim-spf/)
 
 <!-- 
 # Plugins For Roundcube
@@ -186,6 +183,7 @@ saved locally by the name of the MX_HOST & MX_DOMAIN. This allows a
 single deploy system to manage multiple deployment projects.
 
 [Terraform Remote State Backend](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
+
 [Create a Spaces Bucket](https://docs.digitalocean.com/products/spaces/reference/terraform-backend/)
 
 [Terraform For DO Bucket](https://registry.terraform.io/providers/digitalocean/digitalocean/latest/docs/resources/spaces_bucket_object)
@@ -233,8 +231,6 @@ certificates
 Copy the __settings.example.json__ file to a private directory outside of
 the project, and replace the values in it with values for your project,
 admin token from DigitalOcean, the reserved IP, MX_HOST, and MX_DOMAIN.
-
-[Context: "settings.json"]
 
 ```json
 {
