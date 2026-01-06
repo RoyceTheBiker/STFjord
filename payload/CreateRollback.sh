@@ -122,7 +122,7 @@ function DiffUtil {
   # Path ARGS for rollback are comments in the rollback script.
   RB_SCRIPT="${MY_HOME}/ChangeControl/rollback-${CHG_DIFF}.sh"
   PATH_ARGS=($(cat ${RB_SCRIPT} | sed -ne '/#DIR_ARGS/,/#FILE_ARGS/p' | grep -vE "^#DIR_ARGS|^$|#FILE_ARGS" | sed -e 's/^#//'))
-  for DPATH in ${PATH_ARGS[@]}; do
+  for DPATH in "${PATH_ARGS[@]}"; do
     diff <(find "${DPATH}" -type f | sort) <(
       cd "${CHG_CONTENT}"
       find ".${DPATH}" -type f | sort | sed -e 's/^.//'

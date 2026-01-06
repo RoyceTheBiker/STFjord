@@ -114,6 +114,8 @@ The ''jq'' command-line program is used by these scripts to read JSON files.
 
 [DigitalOcean Terraform Provider Reference](https://docs.digitalocean.com/reference/terraform/reference/)
 
+[DigitalOcean Terraform Provider Registry](https://github.com/digitalocean/terraform-provider-digitalocean/tree/main)
+
 ## CertBot
 
 Setting up a public server requires it to use signed certificates.
