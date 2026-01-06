@@ -87,63 +87,63 @@ function RedRemovedFile {
 
 function DereferenceLink {
   ORIG_DIR=$(pwd)
-  [ ${DEBUG} -eq 1 ] && echo "ORIG_DIR='$ORIG_DIR'" >&2
+  [ "${DEBUG}" -eq 1 ] && echo "ORIG_DIR='$ORIG_DIR'" >&2
   PATH_LINK="$1"
-  [ ${DEBUG} -eq 1 ] && echo "PATH_LINK='$PATH_LINK'" >&2
+  [ "${DEBUG}" -eq 1 ] && echo "PATH_LINK='$PATH_LINK'" >&2
   LINK_FILE=$(basename "$PATH_LINK")
-  [ ${DEBUG} -eq 1 ] && echo "LINK_FILE='$LINK_FILE'" >&2
+  [ "${DEBUG}" -eq 1 ] && echo "LINK_FILE='$LINK_FILE'" >&2
   PATH_ONLY=$(dirname "$PATH_LINK")
-  [ ${DEBUG} -eq 1 ] && echo "PATH_ONLY='$PATH_ONLY'" >&2
-  cd $PATH_ONLY || {
+  [ "${DEBUG}" -eq 1 ] && echo "PATH_ONLY='$PATH_ONLY'" >&2
+  cd "$PATH_ONLY" || {
     echo "Cannot use this path '$PATH_ONLY'" >&2
     return
   }
-  NEW_TARGET=$(/usr/bin/stat --format="%N" $LINK_FILE | gawk '{print $NF}' | cut -b 2- | rev | cut -b 2- | rev)
-  [ ${DEBUG} -eq 1 ] && echo "NEW_TARGET='$NEW_TARGET'" >&2
+  NEW_TARGET=$(/usr/bin/stat --format="%N" "$LINK_FILE" | gawk '{print $NF}' | cut -b 2- | rev | cut -b 2- | rev)
+  [ "${DEBUG}" -eq 1 ] && echo "NEW_TARGET='$NEW_TARGET'" >&2
   [ -e "$NEW_TARGET" ] || {
     echo "Cannot find target '$NEW_TARGET'" >&2
     return
   }
   NEW_TARGET_FILE=$(basename $NEW_TARGET)
-  [ ${DEBUG} -eq 1 ] && echo "NEW_TARGET_FILE='$NEW_TARGET_FILE'" >&2
+  [ "${DEBUG}" -eq 1 ] && echo "NEW_TARGET_FILE='$NEW_TARGET_FILE'" >&2
   NEW_TARGET_PATH=$(dirname $NEW_TARGET)
-  [ ${DEBUG} -eq 1 ] && echo "NEW_TARGET_PATH='$NEW_TARGET_PATH'" >&2
+  [ "${DEBUG}" -eq 1 ] && echo "NEW_TARGET_PATH='$NEW_TARGET_PATH'" >&2
   cd $NEW_TARGET_PATH || {
     echo "Cannot change to the directory '$NEW_TARGET_PATH'" >&2
     return
   }
-  echo $(pwd)/$NEW_TARGET_FILE
+  echo "$(pwd)"/$NEW_TARGET_FILE
   cd $ORIG_DIR
 }
 
 function DiffUtil {
-  CHG_CONTENT=$(ls -d1 ${MY_HOME}/ChangeControl/${CHG_DIFF}* | head -n1)
+  CHG_CONTENT=$(ls -d1 "${MY_HOME}"/ChangeControl/${CHG_DIFF}* | head -n1)
   # Get the dir list from the rollback script.
   # Path ARGS for rollback are comments in the rollback script.
   RB_SCRIPT="${MY_HOME}/ChangeControl/rollback-${CHG_DIFF}.sh"
   PATH_ARGS=($(cat ${RB_SCRIPT} | sed -ne '/#DIR_ARGS/,/#FILE_ARGS/p' | grep -vE "^#DIR_ARGS|^$|#FILE_ARGS" | sed -e 's/^#//'))
   for DPATH in ${PATH_ARGS[@]}; do
-    diff <(find ${DPATH} -type f | sort) <(
-      cd ${CHG_CONTENT}
-      find .${DPATH} -type f | sort | sed -e 's/^.//'
+    diff <(find "${DPATH}" -type f | sort) <(
+      cd "${CHG_CONTENT}"
+      find ".${DPATH}" -type f | sort | sed -e 's/^.//'
     ) | grep -E "^[<>]" | while read LINE; do
-      $(echo ${LINE} | grep -q "^<") && {
+      echo ${LINE} | grep -q "^<" && {
         GreenAddedFile "$LINE"
       } || :
-      $(echo ${LINE} | grep -q "^>") && {
+      echo ${LINE} | grep -q "^>" && {
         RedRemovedFile "$LINE"
       } || :
     done
   done
 
-  find ${CHG_CONTENT} -type f | while read LINE; do
+  find "${CHG_CONTENT}" -type f | while read LINE; do
     [ -f ${LINE} ] && [ -f $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||") ] && {
-      A=$(sum $LINE | awk '{print $1}')
+      A=$(sum "$LINE" | awk '{print $1}')
       B=$(sum $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||") | awk '{print $1}')
       # Sum values may start with zero, so they need to be considered strings to avoid base change.
       [[ "${A}" != "${B}" ]] && {
         echo "Changes in $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||")"
-        diff --color=always $LINE $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||")
+        diff --color=always "$LINE" $(echo ${LINE} | sed -e "s|${CHG_CONTENT}||")
       } || :
     }
   done
@@ -151,7 +151,7 @@ function DiffUtil {
 }
 
 CHG_DIFF="last"
-MY_HOME=$(getent passwd $(id -un) | cut -d: -f6)
+MY_HOME=$(getent passwd "$(id -un)" | cut -d: -f6)
 function ProcessArguments {
   ACTION="Create Rollback"
   [[ "${1}" =~ ^INC[0-9]{7}$ ]] && {
