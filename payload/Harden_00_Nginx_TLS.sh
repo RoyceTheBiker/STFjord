@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091,SC2086
 source "$(dirname $0)/lib.sh"
 Header "Harden Nginx TLS"
 ELL="/etc/letsencrypt/live"
@@ -10,6 +10,7 @@ ELL="/etc/letsencrypt/live"
 CreateRollback.sh SEQ /etc/nginx/nginx.conf
 sed -i /etc/nginx/nginx.conf -e '/^ *listen *80/s/80/443 ssl http2/' # Change IPv4 port 80 to be 443
 sed -i /etc/nginx/nginx.conf -e '/^ *listen *.*:80/d'                # Remove IPv6 port 80
+# shellcheck disable=SC2086
 sed -i /etc/nginx/nginx.conf -e '/^ *root/a \
         ssl_certificate "'${ELL}/${MX_HOST,,}.${MX_DOMAIN,,}'/fullchain.pem";\
         ssl_certificate_key "'${ELL}/${MX_HOST,,}.${MX_DOMAIN,,}'/privkey.pem";\
