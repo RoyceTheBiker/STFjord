@@ -232,9 +232,10 @@ Copy the __settings.example.json__ file to a private directory outside of
 the project, and replace the values in it with values for your project,
 admin token from DigitalOcean, the reserved IP, MX_HOST, and MX_DOMAIN.
 
+__The DO token is no longer inside the settings JSON file__
+
 ```json
 {
-  "do_token": "dop_v1_abcdefghijklmnop1234567890",
   "reserved_ip": "1.2.3.4",
   "MX_HOST": "mail",
   "MX_DOMAIN": "example.com",

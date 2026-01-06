@@ -53,30 +53,48 @@ function debugLogging {
   export TF_LOG=DEBUG
 }
 
+function setTokenVar {
+  cat ${ARG2} | jq --raw-output '.do_token' | grep -q do && {
+    echo "The DO token is no longer needed in the settings JSON" >&2
+    echo "Please remove the token from the settings JSON file" >&2
+    exit 1
+  } || :
+  export TF_VAR_do_token=$(doctl auth token)
+}
+
 function tf_init {
   debugLogging
   readSshKey
+  setTokenVar
   WriteBackend
+  if [ -f .terraform/terraform.tfstate ]; then
+    rm -f .terraform/terraform.tfstate
+  fi
+  echo "terraform init"
   terraform init
 }
 
 function tf_validate {
   tf_init
+  echo "terraform validate"
   terraform validate
 }
 
 function tf_plan {
   tf_init
+  echo "terraform plan"
   terraform plan --var-file=${TF_VAR_settings_json}
 }
 
 function tf_apply {
   tf_init
+  echo "terraform apply"
   terraform apply --var-file=${TF_VAR_settings_json}
 }
 
 function tf_destroy {
   tf_init
+  echo "terraform destroy"
   terraform destroy --var-file=${TF_VAR_settings_json}
 }
 
@@ -107,9 +125,9 @@ REMOTE_STATE=$(cat ${ARG2} | jq 'has("REMOTE_STATE")')
   STATE_LOCATION=$(cat ${ARG2} | jq --raw-output '.REMOTE_STATE')
 } || {
   # Split local state when not using remote state
-  mkdir -p .states
   echo "MX_DOMAIN=$MX_DOMAIN"
-  STATE_LOCATION=".states/${MX_DOMAIN}"
+  mkdir -p .states/${MX_DOMAIN}
+  STATE_LOCATION=".states/${MX_DOMAIN}/${MX_DOMAIN}"
 }
 
 echo "REMOTE_STATE='$REMOTE_STATE'"
