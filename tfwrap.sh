@@ -54,7 +54,7 @@ function debugLogging {
 }
 
 function setTokenVar {
-  cat ${ARG2} | jq --raw-output '.do_token' | grep -q do && {
+  cat "${ARG2}" | jq --raw-output '.do_token' | grep -q do_token && {
     echo "The DO token is no longer needed in the settings JSON" >&2
     echo "Please remove the token from the settings JSON file" >&2
     exit 1
@@ -83,19 +83,19 @@ function tf_validate {
 function tf_plan {
   tf_init
   echo "terraform plan"
-  terraform plan --var-file=${TF_VAR_settings_json}
+  terraform plan --var-file="${TF_VAR_settings_json}"
 }
 
 function tf_apply {
   tf_init
   echo "terraform apply"
-  terraform apply --var-file=${TF_VAR_settings_json}
+  terraform apply --var-file="${TF_VAR_settings_json}"
 }
 
 function tf_destroy {
   tf_init
   echo "terraform destroy"
-  terraform destroy --var-file=${TF_VAR_settings_json}
+  terraform destroy --var-file="${TF_VAR_settings_json}"
 }
 
 # Check for two arguments
@@ -114,15 +114,15 @@ esac
 
 # Second argument JSON file
 REMOTE_STATE=false
-[ -f ${ARG2} ] || help
+[ -f "${ARG2}" ] || help
 
 STATE_LOCATION=
-MX_DOMAIN=$(cat ${ARG2} | jq --raw-output '.MX_DOMAIN')
-REMOTE_STATE=$(cat ${ARG2} | jq 'has("REMOTE_STATE")')
+MX_DOMAIN=$(cat "${ARG2}" | jq --raw-output '.MX_DOMAIN')
+REMOTE_STATE=$(cat "${ARG2}" | jq 'has("REMOTE_STATE")')
 [ "${REMOTE_STATE}x" == "truex" ] && {
 
   echo "read the value of remote state"
-  STATE_LOCATION=$(cat ${ARG2} | jq --raw-output '.REMOTE_STATE')
+  STATE_LOCATION=$(cat "${ARG2}" | jq --raw-output '.REMOTE_STATE')
 } || {
   # Split local state when not using remote state
   echo "MX_DOMAIN=$MX_DOMAIN"
@@ -133,7 +133,7 @@ REMOTE_STATE=$(cat ${ARG2} | jq 'has("REMOTE_STATE")')
 echo "REMOTE_STATE='$REMOTE_STATE'"
 echo "STATE_LOCATION='$STATE_LOCATION'"
 
-export TF_VAR_settings_json=${ARG2}
+export TF_VAR_settings_json="${ARG2}"
 
 # test digital ocean token
 doctl apps list-regions >/dev/null || {
