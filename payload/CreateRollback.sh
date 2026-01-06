@@ -90,9 +90,9 @@ function DereferenceLink {
   [ ${DEBUG} -eq 1 ] && echo "ORIG_DIR='$ORIG_DIR'" >&2
   PATH_LINK="$1"
   [ ${DEBUG} -eq 1 ] && echo "PATH_LINK='$PATH_LINK'" >&2
-  LINK_FILE=$(basename $PATH_LINK)
+  LINK_FILE=$(basename "$PATH_LINK")
   [ ${DEBUG} -eq 1 ] && echo "LINK_FILE='$LINK_FILE'" >&2
-  PATH_ONLY=$(dirname $PATH_LINK)
+  PATH_ONLY=$(dirname "$PATH_LINK")
   [ ${DEBUG} -eq 1 ] && echo "PATH_ONLY='$PATH_ONLY'" >&2
   cd $PATH_ONLY || {
     echo "Cannot use this path '$PATH_ONLY'" >&2
