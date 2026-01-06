@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
 source "$(dirname $0)/lib.sh"
 Header "Harden Postfix"
 CreateRollback.sh SEQ /etc/postfix/

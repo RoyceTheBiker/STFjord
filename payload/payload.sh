@@ -13,6 +13,7 @@ set -e
 
 # Change to the directory that this script is in.
 cd $(dirname $0)
+# shellcheck disable=SC1091
 source lib.sh
 
 # CreateRollback makes a backup and a rollback script to restore a file before making changes to it.

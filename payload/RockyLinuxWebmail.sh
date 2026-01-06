@@ -31,6 +31,7 @@ echo "::1 $(hostname -s) $(hostname -f)" >>/etc/hosts
 }
 
 export LAST_SECTION=
+# shellcheck disable=SC1091
 source "$(dirname $0)/lib.sh"
 Header "Rocky Linux Webmail setup"
 Header $Release

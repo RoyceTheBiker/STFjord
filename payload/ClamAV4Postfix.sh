@@ -18,6 +18,7 @@ MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
 }
 
 export LAST_SECTION=
+# shellcheck disable=SC1091
 source "$(dirname $0)/lib.sh"
 
 Header "Rocky Linux Webmail setup"
