@@ -1,7 +1,3 @@
-provider "digitalocean" {
-  alias = "firewall"
-}
-
 data "http" "myip" {
   url = "http://ipv4.icanhazip.com"
 }
@@ -15,7 +11,7 @@ resource "digitalocean_firewall" "email-firewall" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = ["${chomp(data.http.myip.response_body)}"]
+    source_addresses = [chomp(data.http.myip.response_body)]
   }
 
   # Unencrypted HTTP required by Certbot

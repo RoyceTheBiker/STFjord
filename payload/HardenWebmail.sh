@@ -20,6 +20,7 @@ export MX_DOMAIN=${MX_DOMAIN-"SiliconTao.com"}
 RLWM_HL=${HOME}/RLWM_Harden_steps
 mkdir -pv ${RLWM_HL}
 
+# shellcheck disable=SC1091
 source "$(dirname $0)/lib.sh"
 
 export LAST_SECTION=

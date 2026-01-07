@@ -13,6 +13,7 @@ set -e
 
 # Change to the directory that this script is in.
 cd $(dirname $0)
+# shellcheck disable=SC1091
 source lib.sh
 
 # CreateRollback makes a backup and a rollback script to restore a file before making changes to it.
@@ -34,7 +35,7 @@ source loadSettings.sh
 # Before we do anything else, set the desired timezone
 # Timezone is one word, but here we use SCREAMING_SNAKE_CASE
 # to not interfere with any other variable
-timedatectl set-timezone ${TIME_ZONE}
+timedatectl set-timezone "${TIME_ZONE}"
 
 # Change the local logging to use the new TZ
 echo "TZ=\"${TIME_ZONE}\"" >>/etc/sysconfig/rsyslog
